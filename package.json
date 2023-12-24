@@ -1,18 +1,44 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "devDependencies": {
-    "@nuxt/devtools": "latest",
-    "nuxt": "^3.8.2",
-    "vue": "^3.3.12",
-    "vue-router": "^4.2.5"
-  }
+	"name": "nuxt-app",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "nuxt build",
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"preview": "nuxt preview",
+		"postinstall": "nuxt prepare",
+		"prepare": "husky install"
+	},
+	"devDependencies": {
+		"@nuxt/devtools": "latest",
+		"@typescript-eslint/eslint-plugin": "^6.15.0",
+		"@typescript-eslint/parser": "^6.15.0",
+		"eslint": "^8.56.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-config-standard-with-typescript": "^43.0.0",
+		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-n": "^16.5.0",
+		"eslint-plugin-promise": "^6.1.1",
+		"eslint-plugin-vue": "^9.19.2",
+		"husky": "^8.0.3",
+		"lint-staged": "^15.2.0",
+		"nuxt": "^3.8.2",
+		"prettier": "3.1.1",
+		"stylelint": "^16.0.2",
+		"stylelint-config-standard": "^35.0.0",
+		"stylelint-config-standard-scss": "^12.0.0",
+		"typescript": "^5.3.3",
+		"vue": "^3.3.12",
+		"vue-router": "^4.2.5"
+	},
+	"dependencies": {
+		"sass": "^1.69.5"
+	},
+	"lint-staged": {
+		"**/*": "prettier --write --ignore-unknown",
+		"*.js": "eslint --cache --fix",
+		"*.css": "stylelint --fix",
+		"*.{js,css,md}": "prettier --write"
+	}
 }
