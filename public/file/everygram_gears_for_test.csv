@@ -1,0 +1,28 @@
+Gear Name,Weight (g),Category,Description,Currency,Price,Acquired Date
+Backpack,800,packs,Spacious hiking backpack,USD,120,2023-04-15
+Jacket,400,clothing,Lightweight waterproof jacket,USD,80,2022-11-10
+Tarp,1200,shelter,Durable camping tarp,USD,60,2021-08-22
+Sleeping Bag,900,sleeping,3-season sleeping bag,USD,150,2023-02-05
+Phone,350,electronics,Smartphone with GPS,USD,700,2024-01-12
+Camera,650,photography,Mirrorless digital camera,USD,900,2023-09-30
+Stove,220,cooking,Compact backpacking stove,USD,45,2022-06-18
+Water Bottle,230,hydration,Insulated water bottle,USD,25,2023-07-03
+Trekking Poles,280,tools,Adjustable trekking poles,USD,60,2022-10-27
+Sun Glasses,80,accessories,Polarized sunglasses,USD,30,2023-05-20
+Seat Pad,60,others,Foam seat pad,USD,15,2021-12-14
+InvalidWeight,-10,clothing,Negative weight,USD,50,2023-01-01
+InvalidCategory,500,invalidcat,Unknown category,USD,40,2023-01-01
+LongDescription,300,tools,"This description is way too long and should trigger the description length validation error because it exceeds the maximum allowed characters for a gear description in the system. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur consectetur, nisl nisi consectetur nisi, euismod euismod nisi nisi euismod.",USD,20,2023-01-01
+InvalidCurrency,200,accessories,Invalid currency,XXX,10,2023-01-01
+InvalidPrice,100,others,Negative price,USD,-5,2023-01-01
+PriceNoCurrency,150,others,Price but no currency,,25,2023-01-01
+CurrencyNoPrice,180,others,Currency but no price,USD,,2023-01-01
+InvalidDate,250,others,Invalid date,USD,30,2023-99-99
+MissingWeight,,clothing,No weight,USD,50,2023-01-01
+MissingCategory,500,,No category,USD,40,2023-01-01
+MissingDescription,300,tools,,,2023-01-01
+MissingCurrency,200,accessories,No currency,,10,2023-01-01
+MissingPrice,100,others,No price,USD,,2023-01-01
+MissingAcquiredDate,150,others,No acquired date,USD,25,
+MissingName,180,others,No name,USD,30,2023-01-01
+MissingAllFields,,,,,,

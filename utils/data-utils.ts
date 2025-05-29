@@ -78,6 +78,20 @@ const formatDateString = (date: string, separator: string): string => {
     return date.split('-').join(separator);
 };
 
+const validateDateString = (date: string): boolean => {
+    if (!date) return false;
+
+    // regex
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) return false;
+
+    // check if date is valid
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) return false;
+
+    return true;
+};
+
 const getDaysBetweenDates = (startDate: string, endDate: string): number => {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -132,6 +146,7 @@ export default {
     getWornGearsInTrip,
     formatDateToString,
     formatDateString,
+    validateDateString,
     getDaysBetweenDates,
     formatTripDate,
     getTripBannerImageUrl,

@@ -28,11 +28,13 @@
                 />
             </template>
         </PrimeColumn>
+        <!-- name -->
         <PrimeColumn field="name" :header="$t('LABEL_NAME')">
             <template #body="{ data }">
                 <GearNameWithBrand :gear="data" />
             </template>
         </PrimeColumn>
+        <!-- weight -->
         <PrimeColumn
             field="formattedWeight"
             :header="$t('LABEL_WEIGHT')"
@@ -54,6 +56,37 @@
                 <GearCategoryAvatar :category="data.category" size="small" />
             </template>
         </PrimeColumn>
+        <!-- addtional field: description -->
+        <PrimeColumn
+            v-if="addtionalFields?.includes('description')"
+            field="description"
+            :header="$t('LABEL_DESCRIPTION')"
+        >
+            <template #body="{ data }">
+                <div class="w-10rem text-ellipsis">{{ data.description }}</div>
+            </template>
+        </PrimeColumn>
+        <!-- addtional field: currency -->
+        <PrimeColumn
+            v-if="addtionalFields?.includes('currency')"
+            field="currency"
+            :header="$t('LABEL_CURRENCY')"
+            class="white-space-nowrap"
+        />
+        <!-- addtional field: price -->
+        <PrimeColumn
+            v-if="addtionalFields?.includes('price')"
+            field="price"
+            :header="$t('LABEL_PRICE')"
+            class="text-right white-space-nowrap"
+        />
+        <!-- addtional field: acquired date -->
+        <PrimeColumn
+            v-if="addtionalFields?.includes('acquiredDate')"
+            field="acquiredDate"
+            :header="$t('LABEL_ACQUIRED_DATE')"
+            class="white-space-nowrap"
+        />
     </PrimeDataTable>
 </template>
 
@@ -75,6 +108,7 @@ const props = defineProps<{
     dataKey: string;
     showPhoto?: boolean;
     filters?: Record<string, any>;
+    addtionalFields?: (keyof Gear)[];
 }>();
 const emit = defineEmits<{
     update: [selectedGears: T[]];
@@ -86,5 +120,5 @@ const formattedGears = computed(() => {
         formattedWeight: gear.weight ? formatWeight(gear.weight) : '-',
     }));
 });
-const { gearCategoryToLabel, formatWeight, formatBrand } = useLangUtils();
+const { formatWeight, formatBrand } = useLangUtils();
 </script>

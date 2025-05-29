@@ -4,7 +4,7 @@
         :header="$t('ACTION_IMPORT_GEARS')"
         :visible="isOpen"
         :modal="true"
-        class="mx-2 w-30rem"
+        :class="['mx-2', activeStep === 2 ? '' : ' w-30rem']"
         @update:visible="emit('close')"
         :pt="{
             content: {
@@ -81,6 +81,12 @@
                         :selectableGears="formattedGearsData"
                         :selectedGears="selectedGears"
                         dataKey="name"
+                        :addtionalFields="[
+                            'description',
+                            'currency',
+                            'price',
+                            'acquiredDate',
+                        ]"
                         @update="
                             (newSelectedGears) =>
                                 (selectedGears = newSelectedGears)
@@ -153,7 +159,16 @@
 </template>
 
 <script setup lang="ts">
-type ImportGear = Pick<Gear, 'name' | 'weight' | 'category'>;
+type ImportGear = Pick<
+    Gear,
+    | 'name'
+    | 'weight'
+    | 'category'
+    | 'description'
+    | 'currency'
+    | 'price'
+    | 'acquiredDate'
+>;
 const props = defineProps<{
     isOpen: boolean;
 }>();
@@ -187,7 +202,7 @@ const onFileSelected = async (file: File) => {
             return;
         }
 
-        if (row.length !== 3) {
+        if (row.length !== 7) {
             invalidRows.value.push({
                 index,
                 data: row,
@@ -205,6 +220,7 @@ const onFileSelected = async (file: File) => {
             return;
         }
 
+        // name
         const name = row[0];
         if (!name || name.length > constants.LIMIT.maxNameLength) {
             invalidRows.value.push({
@@ -215,6 +231,7 @@ const onFileSelected = async (file: File) => {
             return;
         }
 
+        // weight
         const weight = _round(
             _toNumber(row[1]),
             constants.LIMIT.maxFractionDigits,
@@ -232,16 +249,87 @@ const onFileSelected = async (file: File) => {
             return;
         }
 
+        // category
         const category: GearCategory = (
             constants.GEAR_CATEGORY_KEYS.includes(row[2] as GearCategory)
                 ? row[2]
                 : 'others'
         ) as GearCategory;
 
+        // description
+        const description = row[3];
+        if (
+            description &&
+            description.length > constants.LIMIT.maxGearDescriptionLength
+        ) {
+            invalidRows.value.push({
+                index,
+                data: row,
+                reason: i18n.t('INFO_INVALID_GEAR_REASON_DESCRIPTION_LENGTH'),
+            });
+            return;
+        }
+
+        // currency
+        let currency: CurrencyCode | undefined =
+            (row[4].toUpperCase() as CurrencyCode) || undefined;
+        if (currency && !constants.CURRENCY_CODES.includes(currency)) {
+            invalidRows.value.push({
+                index,
+                data: row,
+                reason: i18n.t('INFO_INVALID_GEAR_REASON_CURRENCY'),
+            });
+            return;
+        }
+
+        // price
+        let price: number | undefined = Number(row[5]);
+        if (price && (isNaN(price) || price < 0)) {
+            invalidRows.value.push({
+                index,
+                data: row,
+                reason: i18n.t('INFO_INVALID_GEAR_REASON_PRICE'),
+            });
+            return;
+        }
+        if (price && !currency) {
+            invalidRows.value.push({
+                index,
+                data: row,
+                reason: i18n.t(
+                    'INFO_INVALID_GEAR_REASON_PRICE_WITHOUT_CURRENCY',
+                ),
+            });
+            return;
+        }
+        if (currency && !price) {
+            // if currency is provided but price is not, set both to undefined
+            currency = undefined;
+            price = undefined;
+        } else if (currency && price) {
+            // round price to the currency's fraction
+            price = _round(price, constants.CURRENCIES[currency].fraction);
+        }
+
+        // acquired date
+        const acquiredDate = row[6];
+        if (acquiredDate && !dataUtils.validateDateString(acquiredDate)) {
+            invalidRows.value.push({
+                index,
+                data: row,
+                reason: i18n.t('INFO_INVALID_GEAR_REASON_ACQUIRED_DATE'),
+            });
+            return;
+        }
+
         formattedGearsData.value.push({
             name,
             weight,
             category,
+            description,
+            currency,
+            price,
+            acquiredDate,
         });
 
         gearNameExists.value[name] = true;
@@ -261,11 +349,27 @@ const resetData = () => {
 
 const userGearsStore = useUserGearsStore();
 const onImportGears = async () => {
-    const gears = selectedGears.value.map((gear) => ({
-        name: gear.name,
-        weight: gear.weight,
-        category: gear.category,
-    }));
+    const gears = selectedGears.value.map((gear) => {
+        const newGear: EditingGear = {
+            name: gear.name,
+            weight: gear.weight,
+            category: gear.category,
+        };
+
+        // Optional fields
+        if (gear.description) {
+            newGear.description = gear.description;
+        }
+        if (gear.currency && gear.price) {
+            newGear.price = gear.price;
+            newGear.currency = gear.currency;
+        }
+        if (gear.acquiredDate) {
+            newGear.acquiredDate = gear.acquiredDate;
+        }
+
+        return newGear;
+    });
 
     try {
         isImporting.value = true;

@@ -1,12 +1,12 @@
-Gear Name,Weight (g),Category
-Backpack,800,packs
-Jacket,400,clothing
-Tarp,1200,shelter
-Sleeping Bag,900,sleeping
-Phone,350,electronics
-Camera,650,photography
-Stove,220,cooking
-Water Bottle,230,hydration
-Trekking Poles,280,tools
-Sun Glasses,80,accessories
-Seat Pad,60,others
+Gear Name,Weight (g),Category,Description,Currency,Price,Acquired Date
+Backpack,800,packs,Spacious hiking backpack,USD,120,2023-04-15
+Jacket,400,clothing,Lightweight waterproof jacket,USD,80,2022-11-10
+Tarp,1200,shelter,Durable camping tarp,USD,60,2021-08-22
+Sleeping Bag,900,sleeping,3-season sleeping bag,USD,150,2023-02-05
+Phone,350,electronics,Smartphone with GPS,USD,700,2024-01-12
+Camera,650,photography,Mirrorless digital camera,USD,900,2023-09-30
+Stove,220,cooking,Compact backpacking stove,USD,45,2022-06-18
+Water Bottle,230,hydration,Insulated water bottle,USD,25,2023-07-03
+Trekking Poles,280,tools,Adjustable trekking poles,USD,60,2022-10-27
+Sun Glasses,80,accessories,Polarized sunglasses,USD,30,2023-05-20
+Seat Pad,60,others,Foam seat pad,USD,15,2021-12-14

@@ -110,6 +110,8 @@ const CURRENCIES: Record<CurrencyCode, Currency> = {
     SGD: { code: 'SGD', label: 'S$', fraction: 2 },
 };
 
+const CURRENCY_CODES = Object.keys(CURRENCIES) as CurrencyCode[];
+
 export default {
     ROLES,
     COLORS,
@@ -133,4 +135,5 @@ export default {
     BREAK_POINTS,
     PUBLIC_TRIPS_PAGE_SIZE,
     CURRENCIES,
+    CURRENCY_CODES,
 };
