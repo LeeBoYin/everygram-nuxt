@@ -62,6 +62,10 @@ export type Gear = {
     updated?: Timestamp;
     archived?: Timestamp;
     photo?: StorageImage;
+    description?: string;
+    price?: number;
+    currency?: CurrencyCode;
+    acquiredDate?: string; // ISO string or Date
 };
 export type EditingGear = Partial<Gear>;
 export type GearWithQuantity = Gear & { quantity: number };
@@ -143,4 +147,23 @@ export type ThumbnailOption = {
 export type ProfileData = {
     displayName: string;
     photoURL: string;
+};
+
+export type CurrencyCode =
+    | 'TWD'
+    | 'JPY'
+    | 'USD'
+    | 'CNY'
+    | 'EUR'
+    | 'HKD'
+    | 'KRW'
+    | 'GBP'
+    | 'AUD'
+    | 'CAD'
+    | 'SGD';
+
+export type Currency = {
+    code: CurrencyCode;
+    label: string;
+    fraction: 0 | 2;
 };

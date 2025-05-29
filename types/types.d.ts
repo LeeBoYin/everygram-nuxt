@@ -73,6 +73,10 @@ declare global {
         updated?: Timestamp;
         archived?: Timestamp;
         photo?: StorageImage;
+        description?: string;
+        price?: number;
+        currency?: CurrencyCode;
+        acquiredDate?: string; // ISO string or Date
     };
     type EditingGear = Partial<Gear>;
     type GearWithQuantity = Gear & { quantity: number };
@@ -182,5 +186,24 @@ declare global {
     type ProfileData = {
         displayName: string;
         photoURL: string;
+    };
+
+    type CurrencyCode =
+        | 'TWD'
+        | 'JPY'
+        | 'USD'
+        | 'CNY'
+        | 'EUR'
+        | 'HKD'
+        | 'KRW'
+        | 'GBP'
+        | 'AUD'
+        | 'CAD'
+        | 'SGD';
+
+    type Currency = {
+        code: CurrencyCode;
+        label: string;
+        fraction: 0 | 2;
     };
 }

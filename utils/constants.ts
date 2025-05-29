@@ -45,8 +45,10 @@ const LIMIT = {
     minNameLength: 1,
     maxNameLength: 100,
     maxTripDescriptionLength: 2000,
-    maxGearArchiveNoteLength: 50,
     importLimit: 200,
+    // gear
+    maxGearDescriptionLength: 200,
+    maxGearArchiveNoteLength: 50,
     // square
     gearPhotoWidth: 1280,
     gearPhotoHeight: 1280,
@@ -94,6 +96,20 @@ const BREAK_POINTS = {
 
 const PUBLIC_TRIPS_PAGE_SIZE = 24;
 
+const CURRENCIES: Record<CurrencyCode, Currency> = {
+    TWD: { code: 'TWD', label: 'NT$', fraction: 0 },
+    JPY: { code: 'JPY', label: '¥', fraction: 0 },
+    USD: { code: 'USD', label: '$', fraction: 2 },
+    CNY: { code: 'CNY', label: '¥', fraction: 2 },
+    EUR: { code: 'EUR', label: '€', fraction: 2 },
+    HKD: { code: 'HKD', label: 'HK$', fraction: 2 },
+    KRW: { code: 'KRW', label: '₩', fraction: 0 },
+    GBP: { code: 'GBP', label: '£', fraction: 2 },
+    AUD: { code: 'AUD', label: 'A$', fraction: 2 },
+    CAD: { code: 'CAD', label: 'C$', fraction: 2 },
+    SGD: { code: 'SGD', label: 'S$', fraction: 2 },
+};
+
 export default {
     ROLES,
     COLORS,
@@ -116,4 +132,5 @@ export default {
     STORAGE_PATH,
     BREAK_POINTS,
     PUBLIC_TRIPS_PAGE_SIZE,
+    CURRENCIES,
 };
