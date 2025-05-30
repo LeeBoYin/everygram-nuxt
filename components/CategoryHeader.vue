@@ -2,7 +2,12 @@
     <div
         :class="[
             'category-header flex align-items-center gap-3',
-            { 'surface-glass sticky z-1': sticky },
+            { 'sticky z-1': sticky },
+            { 'surface-glass': sticky && stickyTheme === 'surface-glass' },
+            {
+                'category-header--app-background':
+                    sticky && stickyTheme === 'app-background',
+            },
         ]"
     >
         <div class="flex-1 flex align-items-center gap-3">
@@ -41,6 +46,7 @@ const props = defineProps<{
     category: GearCategory | ConsumableCategory;
     weight?: number;
     sticky?: boolean;
+    stickyTheme?: 'surface-glass' | 'app-background';
 }>();
 
 const { gearCategoryToLabel, consumableCategoryToLabel, formatWeight } =
@@ -56,5 +62,12 @@ const consumableCategory = computed(() => props.category as ConsumableCategory);
 <style lang="scss">
 .category-header {
     top: var(--app-header-height);
+    &--app-background {
+        background-color: var(--app-background-color);
+        // to cover the shadow of cards below
+        box-shadow:
+            -0.5rem 0 var(--app-background-color),
+            0.5rem 0 var(--app-background-color);
+    }
 }
 </style>

@@ -223,33 +223,6 @@ definePageMeta({
     layout: 'user-page',
 });
 
-const userGearsStore = useUserGearsStore();
-const { visibleGears, isFetchingGears } = storeToRefs(userGearsStore);
-const { formatBrand } = useLangUtils();
-const displayGears = computed(() =>
-    isFiltered.value ? filteredGears.value : visibleGears.value,
-);
-const gearsGroupByCategory = computed(() =>
-    dataUtils.groupGearsByCategory(displayGears.value),
-);
-const nonEmptyGearCatergories = computed(() =>
-    constants.GEAR_CATEGORY_KEYS.filter(
-        (category) => gearsGroupByCategory.value[category],
-    ),
-);
-const emptyGearCategories = computed(() =>
-    isFiltered.value
-        ? []
-        : constants.GEAR_CATEGORY_KEYS.filter(
-              (category) => !gearsGroupByCategory.value[category],
-          ),
-);
-const displayGearCatergories = computed(() =>
-    isFiltered.value
-        ? nonEmptyGearCatergories.value
-        : [...nonEmptyGearCatergories.value, ...emptyGearCategories.value],
-);
-const { confirmDeleteDialog } = useUiUitls();
 const { gearCategoryToLabel } = useLangUtils();
 const i18n = useI18n();
 
@@ -260,69 +233,22 @@ const { onArchiveGear } = useArchiveGear();
 // for delete gear
 const { confirmDeleteGear } = useDeleteGear();
 
-// for edit gear in table
-const onCellEditComplete = async (e: {
-    data: Gear;
-    newValue: any;
-    field: string;
-}) => {
-    const { data, newValue, field } = e;
-    switch (field) {
-        case 'name':
-            await userGearsStore.updateGear({
-                id: data.id,
-                gearData: {
-                    name: newValue,
-                },
-            });
-            break;
-        case 'weight':
-            await userGearsStore.updateGear({
-                id: data.id,
-                gearData: {
-                    weight: newValue,
-                },
-            });
-            break;
-    }
-};
+// for display gears
+const {
+    visibleGears,
+    isFetchingGears,
+    filterValue,
+    isFiltered,
+    displayGears,
+    gearsGroupByCategory,
+    displayGearCatergories,
+} = useDisplayGears();
 
 // for ImportGearsDialog
 const isOpenImportGearsDialog = ref<boolean>(false);
 
 onMounted(() => {
     analyticsUtils.log(constants.ANALYTICS_EVENTS.VIEW_GEARS_PAGE);
-});
-
-// filter
-const filterValue = ref<string>('');
-const filteredGears = ref<Gear[]>([]);
-const isFiltered = ref<boolean>(false);
-const debouncedUpdateFilteredGears = _debounce(() => {
-    const searchText = filterValue.value.toLocaleLowerCase();
-    if (!searchText) {
-        filteredGears.value = visibleGears.value;
-        isFiltered.value = false;
-        return;
-    }
-    // filter by gear name or brand
-    filteredGears.value = visibleGears.value.filter(
-        (gear) =>
-            gear.name.toLocaleLowerCase().includes(searchText) ||
-            (gear.brand &&
-                formatBrand(gear.brand)
-                    .toLocaleLowerCase()
-                    .includes(searchText)),
-    );
-    isFiltered.value = true;
-}, 500);
-watch(filterValue, (newFilterValue) => {
-    if (!newFilterValue) {
-        // reset immediately when clear filter
-        filteredGears.value = visibleGears.value;
-        isFiltered.value = false;
-    }
-    debouncedUpdateFilteredGears();
 });
 
 // for scroll into view

@@ -81,6 +81,7 @@ export default defineNuxtConfig({
 
         // pages that require authentication
         '/gears': { ssr: false },
+        '/gears-editor': { ssr: false },
         '/archived-gears': { ssr: false },
         '/trips': { ssr: false },
         '/trip/**': { ssr: false },
