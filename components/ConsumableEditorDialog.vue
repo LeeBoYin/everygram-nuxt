@@ -47,7 +47,7 @@
                         :invalid="vuelidate.weight.$error"
                         @keypress.enter="onSubmit"
                     />
-                    <PrimeInputGroupAddon>g</PrimeInputGroupAddon>
+                    <WeightUnitAddon />
                 </PrimeInputGroup>
             </FormField>
             <FormField :label="$t('LABEL_CATEGORY')">

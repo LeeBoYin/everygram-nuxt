@@ -52,9 +52,7 @@
                                 :invalid="vuelidate.weight.$error"
                                 @keypress.enter="onSubmit"
                             />
-                            <PrimeInputGroupAddon class="bg-white"
-                                >g</PrimeInputGroupAddon
-                            >
+                            <WeightUnitAddon />
                         </PrimeInputGroup>
                     </FormField>
                     <!-- brand -->

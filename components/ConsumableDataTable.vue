@@ -41,7 +41,7 @@
                         :max="constants.LIMIT.maxWeight"
                         class="text-right"
                     />
-                    <PrimeInputGroupAddon>g</PrimeInputGroupAddon>
+                    <WeightUnitAddon />
                 </PrimeInputGroup>
             </template>
         </PrimeColumn>
