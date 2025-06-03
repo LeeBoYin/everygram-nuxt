@@ -16,14 +16,8 @@
             />
         </div>
         <div class="flex align-items-center justify-content-between gap-2">
-            <div class="flex align-items-center gap-2">
-                <CategoryLabel :category="gear.category" />
-                <span class="inline-vertical-line text-color-lightest" />
-                <span class="text-color-light">{{
-                    formatWeight(gear.weight)
-                }}</span>
-            </div>
-            <slot name="extra-info"></slot>
+            <slot name="info-left"></slot>
+            <slot name="info-right"></slot>
         </div>
     </div>
 </template>
@@ -44,6 +38,4 @@ defineEmits<{
     'gear-delete': [gear: Gear];
     'gear-remove': [gear: Gear];
 }>();
-
-const { formatWeight } = useLangUtils();
 </script>

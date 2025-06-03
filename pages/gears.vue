@@ -39,23 +39,23 @@
                         />
                         <div class="flex align-items-center gap-2">
                             <!-- view archive -->
-                            <PrimeButton
-                                severity="secondary"
-                                rounded
-                                text
-                                :label="$t('ACTION_VIEW_ARCHIVES')"
-                                icon="pi pi-box"
-                                @click="() => navigateTo('/archived-gears')"
-                                class="hide-in-mobile"
-                            />
-                            <PrimeButton
-                                severity="secondary"
-                                rounded
-                                outlined
-                                icon="pi pi-box"
-                                @click="() => navigateTo('/archived-gears')"
-                                class="lg:hidden"
-                            />
+                            <NuxtLink to="/archived-gears">
+                                <PrimeButton
+                                    severity="secondary"
+                                    rounded
+                                    text
+                                    :label="$t('ACTION_VIEW_ARCHIVES')"
+                                    icon="pi pi-box"
+                                    class="hide-in-mobile"
+                                />
+                                <PrimeButton
+                                    severity="secondary"
+                                    rounded
+                                    outlined
+                                    icon="pi pi-box"
+                                    class="lg:hidden"
+                                />
+                            </NuxtLink>
                             <!-- import gears -->
                             <PrimeButton
                                 severity="secondary"
@@ -112,7 +112,7 @@
                         text
                         size="small"
                         :class="[
-                            'text-color text-left w-full',
+                            'py-2 text-color text-left w-full',
                             { 'opacity-50': !gearsGroupByCategory[category] },
                         ]"
                         @click="scrollToCategory(category)"
@@ -130,53 +130,71 @@
             <!-- main -->
             <div :class="mainClass">
                 <div class="flex flex-column gap-5">
-                    <SectionPanel
+                    <div
                         v-for="category in displayGearCatergories"
                         :id="`category-section-${category}`"
                         :key="category"
-                        :class="{
-                            'opacity-50': !gearsGroupByCategory[category],
-                        }"
+                        class="flex flex-column gap-3"
                         style="scroll-margin-top: var(--app-header-height)"
                     >
-                        <template #header>
-                            <CategoryHeader
-                                :category="category"
-                                class="p-3 border-round-md"
-                                sticky
-                            >
-                                <template #actions>
-                                    <ActionButtonsGroup
-                                        text
-                                        type="icon"
-                                        size="small"
-                                        :actions="[
-                                            {
-                                                icon: 'pi pi-plus',
-                                                label: $t('ACTION_CREATE_GEAR'),
-                                                onClick: () =>
-                                                    onCreateGear({ category }),
-                                            },
-                                        ]"
-                                    />
-                                </template>
-                            </CategoryHeader>
-                        </template>
-                        <template
-                            v-if="gearsGroupByCategory[category]"
-                            #default
+                        <CategoryHeader
+                            :class="{
+                                'opacity-50': !gearsGroupByCategory[category],
+                            }"
+                            :category="category"
+                            class="py-2"
+                            sticky
+                            sticky-theme="app-background"
                         >
-                            <GearDataTable
-                                :gears="gearsGroupByCategory[category]"
-                                :hasQuantity="false"
-                                :actions="['edit', 'archive', 'delete']"
-                                @gear-edit="onEditGear"
-                                @gear-archive="onArchiveGear"
-                                @gear-delete="confirmDeleteGear"
-                                @gear-cell-edit-complete="onCellEditComplete"
-                            />
-                        </template>
-                    </SectionPanel>
+                            <template #actions>
+                                <ActionButtonsGroup
+                                    text
+                                    type="icon"
+                                    size="small"
+                                    :actions="[
+                                        {
+                                            icon: 'pi pi-plus',
+                                            label: $t('ACTION_CREATE_GEAR'),
+                                            onClick: () =>
+                                                onCreateGear({ category }),
+                                        },
+                                    ]"
+                                />
+                            </template>
+                        </CategoryHeader>
+                        <GearCardList
+                            v-if="gearsGroupByCategory[category]"
+                            :gears="gearsGroupByCategory[category]"
+                        >
+                            <template #gear-card="{ gear }">
+                                <GearCardHorizontal
+                                    :gear="gear"
+                                    :action-items="[
+                                        'edit',
+                                        'archive',
+                                        'delete',
+                                    ]"
+                                    @gear-edit="onEditGear"
+                                    @gear-archive="onArchiveGear"
+                                    @gear-delete="confirmDeleteGear"
+                                >
+                                    <template #info-left>
+                                        <GearInfos
+                                            :gear="gear"
+                                            :infos="['weight']"
+                                        />
+                                    </template>
+                                    <template #info-right>
+                                        <GearInfos
+                                            :gear="gear"
+                                            :infos="['price', 'age']"
+                                            class="text-color-lighter"
+                                        />
+                                    </template>
+                                </GearCardHorizontal>
+                            </template>
+                        </GearCardList>
+                    </div>
                 </div>
             </div>
         </div>

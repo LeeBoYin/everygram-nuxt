@@ -134,6 +134,18 @@ const getTripDays = (trip: Trip | TripShare): number => {
     return 0;
 };
 
+const getWeightSortedItems = <
+    T extends { id: string; name: string; weight: number },
+>(
+    items: T[],
+): T[] =>
+    items?.sort(
+        (a, b) =>
+            b.weight - a.weight ||
+            (b.name < a.name ? 1 : -1) ||
+            (b.id < a.id ? 1 : -1),
+    ) ?? [];
+
 export default {
     groupGearsByCategory,
     groupConsumablesByCategory,
@@ -152,4 +164,5 @@ export default {
     getTripBannerImageUrl,
     getGearPhotoUrl,
     getTripDays,
+    getWeightSortedItems,
 };

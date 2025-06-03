@@ -37,6 +37,75 @@ export default function () {
             }
             return brand?.custom || '';
         },
+        formatPrice: (currency: CurrencyCode, price: number) => {
+            if (
+                typeof price !== 'number' ||
+                isNaN(price) ||
+                price <= 0 ||
+                typeof currency !== 'string' ||
+                constants.CURRENCY_CODES.indexOf(currency) < 0
+            ) {
+                return '';
+            }
+            try {
+                return new Intl.NumberFormat(i18n.locale.value, {
+                    style: 'currency',
+                    currency,
+                }).format(price);
+            } catch (e) {
+                return '';
+            }
+        },
+        formatDateString: (date: string, separator = '-') => {
+            if (typeof date !== 'string' || !date) return '';
+            if (typeof separator !== 'string') separator = '-';
+            return date.split('-').join(separator);
+        },
+        formatAge: (date: string) => {
+            if (typeof date !== 'string' || !date) return '';
+            const parsedDate = new Date(date);
+            const now = new Date();
+
+            // Check if the date is valid
+            if (isNaN(parsedDate.getTime()) || parsedDate > now) {
+                return '';
+            }
+
+            // Calculate the difference in years, months, and days
+            let years = now.getFullYear() - parsedDate.getFullYear();
+            let months = now.getMonth() - parsedDate.getMonth();
+            let days = now.getDate() - parsedDate.getDate();
+
+            if (days < 0) {
+                months -= 1;
+                // Get days in previous month
+                const prevMonth = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    0,
+                );
+                days += prevMonth.getDate();
+            }
+            if (months < 0) {
+                years -= 1;
+                months += 12;
+            }
+
+            // years ago, last year, months ago, last month, days ago, yesterday, today
+            if (years > 0) {
+                return i18n.t('INFO_AGO_YEARS', { years }, years);
+            }
+            if (months > 0) {
+                return i18n.t('INFO_AGO_MONTHS', { months }, months);
+            }
+            if (days > 1) {
+                return i18n.t('INFO_AGO_DAYS', { days }, days);
+            }
+            if (days === 1) {
+                return i18n.t('INFO_AGO_YESTERDAY');
+            }
+            return i18n.t('INFO_AGO_TODAY');
+        },
         gearCategoryToLabel: (category: GearCategory) => {
             if (!constants.GEAR_CATEGORY_KEYS.includes(category)) {
                 return i18n.t('GEAR_CATEGORY_OTHERS');

@@ -152,11 +152,3 @@ img {
         padding: 24px;
     }
 }
-
-.inline-vertical-line {
-    display: inline-block;
-    width: 1px;
-    height: 1.2em; // fallback for browsers that don't support `lh`
-    height: 1lh;
-    background-color: currentColor;
-}

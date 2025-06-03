@@ -41,7 +41,13 @@
                                     @gear-unarchive="unarchiveGear"
                                     @gear-delete="confirmDeleteGear"
                                 >
-                                    <template #extra-info>
+                                    <template #info-left>
+                                        <GearInfos
+                                            :gear="gear"
+                                            :infos="['category', 'weight']"
+                                        />
+                                    </template>
+                                    <template #info-right>
                                         <ArchivedGearTag :gear="gear" />
                                     </template>
                                 </GearCardHorizontal>

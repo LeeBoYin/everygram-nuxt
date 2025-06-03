@@ -147,16 +147,9 @@ const props = defineProps<{
     readonly?: boolean;
 }>();
 
-const sortedGears = computed(() => {
-    return (
-        props.gears?.sort(
-            (a, b) =>
-                b.weight - a.weight ||
-                (b.name < a.name ? 1 : -1) ||
-                (b.id < a.id ? 1 : -1),
-        ) ?? []
-    );
-});
+const sortedGears = computed(() =>
+    dataUtils.getWeightSortedItems<Gear>(props.gears || []),
+);
 
 const emit = defineEmits<{
     'gear-cell-edit-complete': [

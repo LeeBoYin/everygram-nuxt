@@ -99,16 +99,9 @@ const props = defineProps<{
     readonly?: boolean;
 }>();
 
-const sortedConsumables = computed(() => {
-    return (
-        props.consumables?.sort(
-            (a, b) =>
-                b.weight - a.weight ||
-                (b.name < a.name ? 1 : -1) ||
-                (b.id < a.id ? 1 : -1),
-        ) ?? []
-    );
-});
+const sortedConsumables = computed(() =>
+    dataUtils.getWeightSortedItems<Consumable>(props.consumables || []),
+);
 
 const emit = defineEmits<{
     'consumable-edit': [consumable: Consumable];
