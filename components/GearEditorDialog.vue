@@ -173,7 +173,7 @@
         <template #footer>
             <!-- Checkbox for adding the new gear to the users gears when creating gear in trip page, checked by default -->
             <div
-                class="flex align-items-center gap-2 w-full"
+                class="flex align-self-center gap-2 w-full"
                 v-if="props.isInTripPage && !editingGear"
             >
                 <PrimeCheckbox
@@ -193,7 +193,7 @@
                         ? $t('INFO_EDIT_GEAR_SYNC_TO_GEARS')
                         : $t('INFO_EDIT_GEAR_SYNC_TO_TRIPS')
                 "
-                class="align-items-center w-full"
+                class="align-self-center w-full"
                 size="sm"
             />
             <PrimeButton

@@ -13,6 +13,10 @@
 
     --app-background-color: #{$eg-c-background};
     --max-page-width: 1440px;
+    --page-container-padding: 1rem;
+    @media (min-width: $lg) {
+        --page-container-padding: 1.5rem;
+    }
 }
 
 /* reset & normalize */
@@ -101,6 +105,13 @@ img {
     backdrop-filter: blur(6px);
 }
 
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -124,6 +135,10 @@ img {
     cursor: pointer !important;
 }
 
+.hide-when-empty:empty {
+    display: none !important;
+}
+
 .container {
     max-width: var(--max-page-width);
     margin: auto;
@@ -140,9 +155,5 @@ img {
         100vh - var(--app-header-height) - var(--app-footer-height)
     );
     margin: auto;
-    padding: 1rem;
-
-    @media (min-width: $lg) {
-        padding: 24px;
-    }
+    padding: var(--page-container-padding);
 }

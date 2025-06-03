@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="trip-weight-info">
         <div
             :class="[
-                'flex flex-column gap-3 p-3 bg-white border-round-top-md',
-                { 'border-round-bottom-md': !wornGears.length },
+                'flex flex-column gap-3 p-3 bg-white lg:border-round-top-md',
+                { 'lg:border-round-bottom-md': !wornGears.length },
             ]"
         >
             <h3 class="flex justify-content-between text-lg">
@@ -40,7 +40,7 @@
         </div>
         <div
             v-if="wornGears.length"
-            class="flex flex-column gap-3 p-3 bg-white border-round-bottom-md border-top-solid border-top-1 border-200"
+            class="flex flex-column gap-3 p-3 bg-white lg:border-round-bottom-md border-top-solid border-top-1 border-200"
         >
             <div class="surface-100 px-3 py-2 border-round-md">
                 <div class="flex justify-content-between my-1">
@@ -126,3 +126,13 @@ const wornGearsWeight = computed(() =>
     _sumBy(props.wornGears, (gear) => (+gear.weight || 0) * gear.quantity),
 );
 </script>
+
+<style lang="scss">
+@import '~/assets/theme/primeflex/core/_variables.scss';
+.trip-weight-info {
+    margin: 0 calc(-1 * var(--page-container-padding));
+    @media (min-width: $lg) {
+        margin: 0;
+    }
+}
+</style>

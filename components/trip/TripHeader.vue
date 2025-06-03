@@ -1,6 +1,6 @@
 <template>
     <div class="trip-header">
-        <div class="w-full relative">
+        <div class="trip-header__banner relative">
             <!-- banner image -->
             <picture class="trip-header__banner-image">
                 <source
@@ -10,7 +10,7 @@
                 <img
                     :src="mobileBannerImage"
                     alt="Trip Banner Image"
-                    class="border-round-md"
+                    class="lg:border-round-md"
                     :style="{
                         viewTransitionName: `trip-image-${trip.id}`,
                     }"
@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div
-                class="col-12 lg:col-4 flex align-items-start lg:justify-content-end"
+                class="col-12 lg:col-4 flex align-items-start lg:justify-content-end hide-when-empty"
             >
                 <slot name="actions" />
             </div>
@@ -80,6 +80,13 @@ const desktopBannerImage = computed(() =>
 @import '~/assets/theme/_eg-colors.scss';
 
 .trip-header {
+    &__banner {
+        margin: calc(-1 * var(--page-container-padding));
+        margin-bottom: 0;
+        @media (min-width: $lg) {
+            margin: 0;
+        }
+    }
     &__banner-image {
         &,
         & > img {

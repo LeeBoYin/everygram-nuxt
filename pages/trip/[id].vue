@@ -28,7 +28,10 @@
                     />
                 </template>
                 <template #actions>
-                    <div class="flex gap-3">
+                    <div
+                        v-if="trip.isPublished || isLargeScreen"
+                        class="flex gap-3"
+                    >
                         <div
                             v-if="trip.isPublished"
                             class="flex align-items-center gap-1 text-color-light"

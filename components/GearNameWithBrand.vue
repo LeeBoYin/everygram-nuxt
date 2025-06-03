@@ -5,6 +5,7 @@
             v-if="gear.brand"
             :class="[
                 'text-color-light',
+                'line-clamp-1', // text-ellipsis doesn't work in data table
                 size === 'lg' ? 'text-xs lg:text-sm' : 'text-xs',
             ]"
         >
@@ -14,7 +15,7 @@
         <div
             :class="[
                 'gear-name-with-brand__name',
-                'text-ellipsis',
+                'line-clamp-1',
                 size === 'lg' ? 'text-base lg:text-lg' : 'text-sm lg:text-base',
             ]"
         >
