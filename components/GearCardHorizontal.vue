@@ -1,7 +1,14 @@
 <template>
-    <div class="flex flex-column gap-3 bg-white border-round-md p-3 shadow-1">
+    <div
+        :class="[
+            'flex flex-column bg-white border-round-md shadow-1',
+            'p-2 lg:p-3',
+            'gap-2 lg:gap-3',
+        ]"
+    >
         <div class="flex align-items-start justify-content-between">
-            <GearLabel :gear="gear" size="lg" />
+            <GearLabel :gear="gear" size="md" class="lg:hidden" />
+            <GearLabel :gear="gear" size="lg" class="hide-in-mobile" />
             <GearActionsMenuButton
                 :gear="gear"
                 :actions="actionItems"

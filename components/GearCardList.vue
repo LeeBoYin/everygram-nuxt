@@ -1,6 +1,6 @@
 <template>
-    <div class="grid">
-        <div v-for="gear in sortedGears" :key="gear.id" class="col-12 md:col-6">
+    <div class="gear-card-list">
+        <div v-for="gear in sortedGears" :key="gear.id">
             <slot name="gear-card" :gear="gear"></slot>
         </div>
     </div>
@@ -15,3 +15,16 @@ const sortedGears = computed(() =>
     dataUtils.getWeightSortedItems<Gear>(props.gears),
 );
 </script>
+
+<style lang="scss">
+@import '~/assets/theme/primeflex/core/_variables.scss';
+
+.gear-card-list {
+    display: grid;
+    gap: 0.75rem;
+    @media (min-width: $lg) {
+        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+        gap: 1rem;
+    }
+}
+</style>
