@@ -51,7 +51,6 @@
                         :gears="gears"
                         :hasQuantity="true"
                         class="lg:ml-6"
-                        readonly
                     />
                 </template>
             </TripGearSection>
@@ -70,7 +69,6 @@
                     <ConsumableDataTable
                         :consumables="consumables"
                         class="lg:ml-6"
-                        readonly
                     />
                 </template>
             </TripConsumableSection>
@@ -90,7 +88,6 @@
                         :gears="gears"
                         :hasQuantity="true"
                         class="lg:ml-6"
-                        readonly
                     />
                 </template>
             </TripGearSection>

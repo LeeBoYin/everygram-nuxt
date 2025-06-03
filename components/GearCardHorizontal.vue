@@ -7,8 +7,7 @@
         ]"
     >
         <div class="flex align-items-start justify-content-between">
-            <GearLabel :gear="gear" size="md" class="lg:hidden" />
-            <GearLabel :gear="gear" size="lg" class="hide-in-mobile" />
+            <GearLabel :gear="gear" :size="isLargeScreen ? 'lg' : 'md'" />
             <GearActionsMenuButton
                 :gear="gear"
                 :actions="actionItems"
@@ -45,4 +44,6 @@ defineEmits<{
     'gear-delete': [gear: Gear];
     'gear-remove': [gear: Gear];
 }>();
+
+const { isLargeScreen } = useDeviceMeta();
 </script>

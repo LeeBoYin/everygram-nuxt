@@ -19,13 +19,17 @@
         <PrimeColumn
             field="name"
             :header="$t('LABEL_NAME')"
-            :class="['hover:surface-50 hide-in-mobile']"
+            :class="['hover:surface-50']"
         >
             <template #body="{ data }">
                 <GearNameWithBrand :gear="data">
                     <template #extra-info>
                         <NotInGearsIcon v-if="data.isForOneTrip" />
-                        <ArchivedGearTag v-if="data.isArchived" :gear="data" />
+                        <ArchivedGearTag
+                            v-if="data.isArchived"
+                            :gear="data"
+                            size="xs"
+                        />
                     </template>
                 </GearNameWithBrand>
             </template>

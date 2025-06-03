@@ -2,119 +2,55 @@
     <PrimeDataTable
         :value="sortedGears"
         dataKey="id"
-        :edit-mode="props.readonly ? undefined : 'cell'"
-        @cell-edit-complete="(e: any) => emit('gear-cell-edit-complete', e)"
         class="p-datatable-hide-thead p-datatable-left-no-padding"
     >
-        <!-- desktop -->
+        <!-- photo -->
         <PrimeColumn field="photo" :header="$t('LABEL_PHOTO')" class="w-3rem">
             <template #body="{ data }">
                 <GearPhoto
                     class="w-3rem h-3rem lg:w-4rem lg:h-4rem"
                     :gear="data"
-                    :readonly="props.readonly"
-                />
-            </template>
-        </PrimeColumn>
-        <PrimeColumn
-            field="name"
-            :header="$t('LABEL_NAME')"
-            :class="['hide-in-mobile', { 'hover:surface-50': !props.readonly }]"
-        >
-            <template #body="{ data }">
-                <GearNameWithBrand :gear="data">
-                    <template #extra-info>
-                        <NotInGearsIcon
-                            v-if="!props.readonly && data.isForOneTrip"
-                        />
-                        <ArchivedGearTag
-                            v-if="!props.readonly && data.isArchived"
-                            :gear="data"
-                        />
-                    </template>
-                </GearNameWithBrand>
-            </template>
-            <template #editor="{ data, field }">
-                <PrimeInputText
-                    v-model="data[field]"
-                    :minlength="constants.LIMIT.minNameLength"
-                    :maxlength="constants.LIMIT.maxNameLength"
-                    class="w-full"
-                />
-            </template>
-        </PrimeColumn>
-        <PrimeColumn
-            field="weight"
-            :header="$t('LABEL_WEIGHT')"
-            :class="[
-                'text-right white-space-nowrap w-8rem hide-in-mobile',
-                { 'hover:surface-50': !props.readonly },
-            ]"
-        >
-            <template #body="{ data }">
-                {{ data.weight ? formatWeight(data.weight) : '-' }}
-            </template>
-            <template #editor="{ data, field }">
-                <PrimeInputGroup class="w-7rem">
-                    <PrimeInputNumber
-                        v-model="data[field]"
-                        :maxFractionDigits="constants.LIMIT.maxFractionDigits"
-                        :min="constants.LIMIT.minWeight"
-                        :max="constants.LIMIT.maxWeight"
-                        class="text-right"
-                    />
-                    <WeightUnitAddon />
-                </PrimeInputGroup>
-            </template>
-        </PrimeColumn>
-        <PrimeColumn
-            v-if="hasQuantity"
-            field="quantity"
-            :header="$t('LABEL_QUANTITY')"
-            :class="[
-                'text-right w-4rem hide-in-mobile',
-                { 'hover:surface-50': !props.readonly },
-            ]"
-        >
-            <template #body="{ data }"> x {{ data.quantity }} </template>
-            <template #editor="{ data, field }">
-                <PrimeInputNumber
-                    v-model="data[field]"
-                    :min="constants.LIMIT.minQuantity"
-                    :max="constants.LIMIT.maxQuantity"
-                    class="w-3rem text-right"
+                    :readonly="!editable"
                 />
             </template>
         </PrimeColumn>
 
-        <!-- mobile -->
-        <PrimeColumn field="name" :header="$t('LABEL_NAME')" class="lg:hidden">
+        <!-- name, brand, description, extra info -->
+        <PrimeColumn field="name" :header="$t('LABEL_NAME')">
             <template #body="{ data }">
-                <GearNameWithBrand :gear="data">
+                <GearNameWithBrand
+                    :gear="data"
+                    :size="isLargeScreen ? 'lg' : 'md'"
+                >
                     <template #extra-info>
-                        <NotInGearsIcon
-                            v-if="!props.readonly && data.isForOneTrip"
-                        />
+                        <NotInGearsIcon v-if="editable && data.isForOneTrip" />
                         <ArchivedGearTag
-                            v-if="!props.readonly && data.isArchived"
+                            v-if="editable && data.isArchived"
                             :gear="data"
+                            size="xs"
                         />
                     </template>
                 </GearNameWithBrand>
             </template>
         </PrimeColumn>
-        <PrimeColumn class="text-right white-space-nowrap text-sm lg:hidden">
+
+        <!-- weight & quantity -->
+        <PrimeColumn class="text-right white-space-nowrap text-sm lg:text-base">
             <template #body="{ data }">
-                {{ data.weight ? formatWeight(data.weight) : '-' }}
-                <template v-if="hasQuantity && data.quantity > 1">
-                    x {{ data.quantity }}
-                </template>
+                <div class="flex flex-column gap-1 lg:gap-2">
+                    <div>
+                        {{ data.weight ? formatWeight(data.weight) : '-' }}
+                    </div>
+                    <div v-if="hasQuantity && data.quantity > 1">
+                        x {{ data.quantity }}
+                    </div>
+                </div>
             </template>
         </PrimeColumn>
 
         <!-- actions -->
         <PrimeColumn
-            v-if="!props.readonly && actions"
+            v-if="editable && actions"
             :exportable="false"
             class="w-1rem px-0 lg:pl-2"
         >
@@ -144,7 +80,7 @@ const props = defineProps<{
     gears?: (Gear & { quantity?: number })[];
     hasQuantity?: boolean;
     actions?: GearAction[];
-    readonly?: boolean;
+    editable?: boolean;
 }>();
 
 const sortedGears = computed(() =>
@@ -152,13 +88,6 @@ const sortedGears = computed(() =>
 );
 
 const emit = defineEmits<{
-    'gear-cell-edit-complete': [
-        {
-            data: Gear;
-            newValue: any;
-            field: string;
-        },
-    ];
     'gear-edit': [gear: Gear];
     'gear-edit-quantity': [gear: GearWithQuantity];
     'gear-add-to-gears': [gear: Gear];
@@ -168,4 +97,5 @@ const emit = defineEmits<{
 }>();
 
 const { formatWeight } = useLangUtils();
+const { isLargeScreen } = useDeviceMeta();
 </script>

@@ -169,16 +169,6 @@
                     </FormField>
                 </div>
             </div>
-            <!-- Hint for editing gear -->
-            <HintInfo
-                v-if="isEditingGear && !editingGear?.isForOneTrip"
-                :description="
-                    props.isInTripPage
-                        ? $t('INFO_EDIT_GEAR_SYNC_TO_GEARS')
-                        : $t('INFO_EDIT_GEAR_SYNC_TO_TRIPS')
-                "
-                size="sm"
-            />
         </template>
         <template #footer>
             <!-- Checkbox for adding the new gear to the users gears when creating gear in trip page, checked by default -->
@@ -195,6 +185,17 @@
                     {{ $t('LABEL_ADD_TO_GEARS') }}
                 </label>
             </div>
+            <!-- Hint for editing gear -->
+            <HintInfo
+                v-else-if="isEditingGear && !editingGear?.isForOneTrip"
+                :description="
+                    props.isInTripPage
+                        ? $t('INFO_EDIT_GEAR_SYNC_TO_GEARS')
+                        : $t('INFO_EDIT_GEAR_SYNC_TO_TRIPS')
+                "
+                class="align-items-center w-full"
+                size="sm"
+            />
             <PrimeButton
                 v-else
                 :label="$t('ACTION_CANCEL')"
@@ -340,7 +341,7 @@ const onSubmit = async () => {
     };
 
     // if not adding to gears, set isForOneTrip to true
-    if (props.isInTripPage && !isEditingGear && !formState.addToGears) {
+    if (props.isInTripPage && !isEditingGear.value && !formState.addToGears) {
         gearData.isForOneTrip = true;
     }
 

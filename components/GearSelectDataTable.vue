@@ -15,10 +15,10 @@
         <PrimeColumn selectionMode="multiple" class="w-2rem" />
         <!-- hide photo on mobile due to limited space -->
         <PrimeColumn
-            v-if="showPhoto"
+            v-if="showPhoto && isLargeScreen"
             field="photo"
             :header="$t('LABEL_PHOTO')"
-            class="hide-in-mobile w-3rem"
+            class="w-3rem"
         >
             <template #body="{ data }">
                 <GearPhoto
@@ -42,16 +42,17 @@
         />
         <!-- desktop category -->
         <PrimeColumn
+            v-if="isLargeScreen"
             field="category"
             :header="$t('LABEL_CATEGORY')"
-            class="hide-in-mobile w-10rem"
+            class="w-10rem"
         >
             <template #body="{ data }">
                 <CategoryLabel :category="data.category" />
             </template>
         </PrimeColumn>
         <!-- mobile category -->
-        <PrimeColumn field="category" class="lg:hidden w-2rem">
+        <PrimeColumn v-else field="category" class="w-2rem">
             <template #body="{ data }">
                 <GearCategoryAvatar :category="data.category" size="small" />
             </template>
@@ -121,4 +122,5 @@ const formattedGears = computed(() => {
     }));
 });
 const { formatWeight, formatBrand } = useLangUtils();
+const { isLargeScreen } = useDeviceMeta();
 </script>

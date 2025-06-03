@@ -43,17 +43,14 @@
                                 <PrimeButton
                                     severity="secondary"
                                     rounded
-                                    text
-                                    :label="$t('ACTION_VIEW_ARCHIVES')"
+                                    :text="isLargeScreen"
+                                    :outlined="!isLargeScreen"
+                                    :label="
+                                        isLargeScreen
+                                            ? $t('ACTION_VIEW_ARCHIVES')
+                                            : ''
+                                    "
                                     icon="pi pi-box"
-                                    class="hide-in-mobile"
-                                />
-                                <PrimeButton
-                                    severity="secondary"
-                                    rounded
-                                    outlined
-                                    icon="pi pi-box"
-                                    class="lg:hidden"
                                 />
                             </NuxtLink>
                             <!-- import gears -->
@@ -61,18 +58,13 @@
                                 severity="secondary"
                                 rounded
                                 outlined
-                                :label="$t('ACTION_IMPORT_GEARS')"
-                                icon="pi pi-file-arrow-up"
-                                class="hide-in-mobile"
-                                @click="isOpenImportGearsDialog = true"
-                            />
-                            <PrimeButton
-                                severity="secondary"
-                                rounded
-                                outlined
+                                :label="
+                                    isLargeScreen
+                                        ? $t('ACTION_IMPORT_GEARS')
+                                        : ''
+                                "
                                 icon="pi pi-file-arrow-up"
                                 @click="isOpenImportGearsDialog = true"
-                                class="lg:hidden"
                             />
                             <!-- create gear -->
                             <PrimeButton
@@ -291,4 +283,6 @@ useHead({
 });
 
 useScrollRestoration('gears');
+
+const { isLargeScreen } = useDeviceMeta();
 </script>

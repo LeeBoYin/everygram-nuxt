@@ -91,7 +91,7 @@ const BREAK_POINTS = {
     sm: 576,
     md: 768,
     lg: 992,
-    xl: 120,
+    xl: 1200,
 };
 
 const PUBLIC_TRIPS_PAGE_SIZE = 24;

@@ -48,7 +48,10 @@
                                         />
                                     </template>
                                     <template #info-right>
-                                        <ArchivedGearTag :gear="gear" />
+                                        <ArchivedGearTag
+                                            :gear="gear"
+                                            size="sm"
+                                        />
                                     </template>
                                 </GearCardHorizontal>
                             </div>

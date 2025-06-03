@@ -40,8 +40,6 @@ const props = defineProps<{
     size?: 'md' | 'lg';
 }>();
 const { formatBrand } = useLangUtils();
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
 </script>
 
 <style lang="scss">
