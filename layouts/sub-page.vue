@@ -1,7 +1,10 @@
 <template>
     <AppHeader class="sticky">
         <template #left>
-            <NuxtLink :to="backButton.parent">
+            <NuxtLink
+                :to="hasLastVisited ? undefined : backButton.parent"
+                @click="hasLastVisited && $router.back()"
+            >
                 <PrimeButton
                     icon="pi pi-arrow-left"
                     :label="backButton.label"
@@ -31,6 +34,9 @@
 
 <script setup lang="ts">
 const route = useRoute();
+const navigation = useNavigationStore();
+const hasLastVisited = computed(() => !!navigation.previousRoute);
+
 const i18n = useI18n();
 const backButton = computed<{ label: string; parent: string }>(() => {
     switch (route.name) {
@@ -52,7 +58,7 @@ const backButton = computed<{ label: string; parent: string }>(() => {
         default:
             return {
                 label: i18n.t('ACTION_BACK'),
-                parent: '/',
+                parent: navigation.previousRoute?.path || '/',
             };
     }
 });

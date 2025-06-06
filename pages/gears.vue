@@ -282,7 +282,5 @@ useHead({
     title: i18n.t('PAGE_GEARS'),
 });
 
-useScrollRestoration('gears');
-
 const { isLargeScreen } = useDeviceMeta();
 </script>

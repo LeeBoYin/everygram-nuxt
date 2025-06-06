@@ -100,6 +100,4 @@ onMounted(() => {
 useHead({
     title: i18n.t('PAGE_TRIPS'),
 });
-
-useScrollRestoration('trips');
 </script>
