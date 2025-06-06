@@ -49,8 +49,8 @@
                 <PrimeInputGroup v-if="formState.dateMode === 'multi'">
                     <PrimeCalendar
                         v-model="formState.startDate"
-                        dateFormat="yy-mm-dd"
-                        placeholder="yyyy-mm-dd"
+                        :dateFormat="constants.DATE_FORMAT"
+                        :placeholder="constants.DATE_PLACEHOLDER"
                         class="w-7rem"
                     />
                     <PrimeInputGroupAddon class="min-w-0 p-1"
@@ -58,16 +58,16 @@
                     >
                     <PrimeCalendar
                         v-model="formState.endDate"
-                        dateFormat="yy-mm-dd"
-                        placeholder="yyyy-mm-dd"
+                        :dateFormat="constants.DATE_FORMAT"
+                        :placeholder="constants.DATE_PLACEHOLDER"
                         class="w-7rem"
                     />
                 </PrimeInputGroup>
                 <PrimeCalendar
                     v-else-if="formState.dateMode === 'single'"
                     v-model="formState.startDate"
-                    dateFormat="yy-mm-dd"
-                    placeholder="yyyy-mm-dd"
+                    :dateFormat="constants.DATE_FORMAT"
+                    :placeholder="constants.DATE_PLACEHOLDER"
                     class="w-full"
                 >
                 </PrimeCalendar>

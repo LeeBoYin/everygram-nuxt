@@ -151,8 +151,8 @@
                         <PrimeCalendar
                             v-model="formState.acquiredDate"
                             class="w-full"
-                            dateFormat="yy-mm-dd"
-                            placeholder="yyyy-mm-dd"
+                            :dateFormat="constants.DATE_FORMAT"
+                            :placeholder="constants.DATE_PLACEHOLDER"
                         />
                     </FormField>
                     <!-- description -->

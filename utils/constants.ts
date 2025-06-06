@@ -112,6 +112,9 @@ const CURRENCIES: Record<CurrencyCode, Currency> = {
 
 const CURRENCY_CODES = Object.keys(CURRENCIES) as CurrencyCode[];
 
+const DATE_FORMAT = 'yy-mm-dd';
+const DATE_PLACEHOLDER = 'yyyy-mm-dd';
+
 export default {
     ROLES,
     COLORS,
@@ -136,4 +139,6 @@ export default {
     PUBLIC_TRIPS_PAGE_SIZE,
     CURRENCIES,
     CURRENCY_CODES,
+    DATE_FORMAT,
+    DATE_PLACEHOLDER,
 };
