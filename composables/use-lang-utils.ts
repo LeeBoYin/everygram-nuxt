@@ -61,7 +61,7 @@ export default function () {
             if (typeof separator !== 'string') separator = '-';
             return date.split('-').join(separator);
         },
-        formatAge: (date: string) => {
+        formatAcquiredDate: (date: string) => {
             if (typeof date !== 'string' || !date) return '';
             const parsedDate = new Date(date);
             const now = new Date();
@@ -93,18 +93,18 @@ export default function () {
 
             // years ago, last year, months ago, last month, days ago, yesterday, today
             if (years > 0) {
-                return i18n.t('INFO_AGO_YEARS', { years }, years);
+                return i18n.t('INFO_ACQUIRED_YEARS_AGO', { years }, years);
             }
             if (months > 0) {
-                return i18n.t('INFO_AGO_MONTHS', { months }, months);
+                return i18n.t('INFO_ACQUIRED_MONTHS_AGO', { months }, months);
             }
             if (days > 1) {
-                return i18n.t('INFO_AGO_DAYS', { days }, days);
+                return i18n.t('INFO_ACQUIRED_DAYS_AGO', { days }, days);
             }
             if (days === 1) {
-                return i18n.t('INFO_AGO_YESTERDAY');
+                return i18n.t('INFO_ACQUIRED_YESTERDAY_AGO');
             }
-            return i18n.t('INFO_AGO_TODAY');
+            return i18n.t('INFO_ACQUIRED_TODAY_AGO');
         },
         gearCategoryToLabel: (category: GearCategory) => {
             if (!constants.GEAR_CATEGORY_KEYS.includes(category)) {

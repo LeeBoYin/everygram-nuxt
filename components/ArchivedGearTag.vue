@@ -1,6 +1,6 @@
 <template>
     <PrimeTag
-        :class="['p-tag-light font-normal cursor-default', `text-${size}`]"
+        :class="['archived-gear-tag cursor-default', `text-${size}`]"
         v-tooltip.bottom="
             gear.archiveNote
                 ? {
@@ -24,6 +24,14 @@
 <script setup lang="ts">
 const props = defineProps<{
     gear: Gear;
-    size?: 'xs' | 'sm';
+    size?: 'xs' | 'sm' | 'base';
 }>();
 </script>
+
+<style lang="scss">
+.archived-gear-tag {
+    font-weight: normal;
+    background-color: var(--surface-200);
+    color: var(--text-color-light);
+}
+</style>

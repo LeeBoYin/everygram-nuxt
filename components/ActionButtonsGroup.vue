@@ -9,7 +9,7 @@
             :outlined="outlined"
             :text="text"
             :raised="raised"
-            :size="size"
+            :size="size === 'medium' ? undefined : size"
             :label="type === 'text' ? action.label : undefined"
             :aria-label="action.label"
             v-tooltip.top="
@@ -34,6 +34,6 @@ const props = defineProps<{
     outlined?: boolean;
     raised?: boolean;
     severity?: string;
-    size?: 'small' | 'large';
+    size?: 'small' | 'medium' | 'large';
 }>();
 </script>

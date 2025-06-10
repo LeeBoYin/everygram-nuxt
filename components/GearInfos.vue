@@ -15,6 +15,7 @@
 <script lang="ts" setup>
 import type { Component } from 'vue';
 import CategoryLabel from './CategoryLabel.vue';
+import GearWeightTag from './GearWeightTag.vue';
 import InlineText from './InlineText.vue';
 
 type GearInfo =
@@ -30,8 +31,8 @@ const props = defineProps<{
     infos: GearInfo[];
 }>();
 
-const { formatWeight, formatPrice, formatDateString, formatAge } =
-    useLangUtils();
+const { formatPrice, formatDateString, formatAcquiredDate } = useLangUtils();
+const { isLargeScreen } = useDeviceMeta();
 
 function getInfoComponent(
     info: GearInfo,
@@ -43,13 +44,13 @@ function getInfoComponent(
                 props: { category: props.gear.category },
             };
         case 'weight':
-            const formattedWeight = formatWeight(props.gear.weight);
-            return formattedWeight
-                ? {
-                      component: InlineText,
-                      props: { text: formattedWeight },
-                  }
-                : null;
+            return {
+                component: GearWeightTag,
+                props: {
+                    weight: props.gear.weight,
+                    size: isLargeScreen.value ? 'base' : 'xs',
+                },
+            };
         case 'price':
             const formattedPrice =
                 props.gear.currency && isNumber(props.gear.price)
@@ -58,7 +59,10 @@ function getInfoComponent(
             return formattedPrice
                 ? {
                       component: InlineText,
-                      props: { text: formattedPrice },
+                      props: {
+                          text: formattedPrice,
+                          class: isLargeScreen.value ? 'text-base' : 'text-xs',
+                      },
                   }
                 : null;
         case 'acquiredDate':
@@ -68,17 +72,23 @@ function getInfoComponent(
             return formattedDate
                 ? {
                       component: InlineText,
-                      props: { text: formattedDate },
+                      props: {
+                          text: formattedDate,
+                          class: isLargeScreen.value ? 'text-base' : 'text-xs',
+                      },
                   }
                 : null;
         case 'age':
             const formattedAge = props.gear.acquiredDate
-                ? formatAge(props.gear.acquiredDate)
+                ? formatAcquiredDate(props.gear.acquiredDate)
                 : null;
             return formattedAge
                 ? {
                       component: InlineText,
-                      props: { text: formattedAge },
+                      props: {
+                          text: formattedAge,
+                          class: isLargeScreen.value ? 'text-base' : 'text-xs',
+                      },
                   }
                 : null;
         default:

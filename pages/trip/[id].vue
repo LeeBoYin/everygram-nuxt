@@ -167,7 +167,7 @@
                                 onClick: () => onCreateConsumable(),
                             },
                         ]"
-                        :size="isLargeScreen ? undefined : 'small'"
+                        :size="isLargeScreen ? 'medium' : 'small'"
                     />
                 </template>
                 <template #category-body="{ consumables }">
