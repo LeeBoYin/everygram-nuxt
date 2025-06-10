@@ -65,7 +65,7 @@
         v-else
         :title="$t('INFO_NO_ARCHIVED_GEARS')"
         :description="$t('INFO_NO_ARCHIVED_GEARS_DESC')"
-        image-src="/image/empty-gear.jpg"
+        image-src="/image/empty-gear-fade.jpg"
     />
     <GearEditorDialog />
     <GearArchiveDialog />
