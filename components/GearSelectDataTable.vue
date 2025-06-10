@@ -57,7 +57,7 @@
                 <GearCategoryAvatar :category="data.category" size="small" />
             </template>
         </PrimeColumn>
-        <!-- addtional field: description -->
+        <!-- additional field: description -->
         <PrimeColumn
             v-if="additionalFields?.includes('description')"
             field="description"
@@ -67,21 +67,21 @@
                 <div class="w-10rem text-ellipsis">{{ data.description }}</div>
             </template>
         </PrimeColumn>
-        <!-- addtional field: currency -->
+        <!-- additional field: currency -->
         <PrimeColumn
             v-if="additionalFields?.includes('currency')"
             field="currency"
             :header="$t('LABEL_CURRENCY')"
             class="white-space-nowrap"
         />
-        <!-- addtional field: price -->
+        <!-- additional field: price -->
         <PrimeColumn
             v-if="additionalFields?.includes('price')"
             field="price"
             :header="$t('LABEL_PRICE')"
             class="text-right white-space-nowrap"
         />
-        <!-- addtional field: acquired date -->
+        <!-- additional field: acquired date -->
         <PrimeColumn
             v-if="additionalFields?.includes('acquiredDate')"
             field="acquiredDate"

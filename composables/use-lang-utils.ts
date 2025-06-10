@@ -101,6 +101,14 @@ export default function () {
 
             // years ago, last year, months ago, last month, days ago, yesterday, today
             if (years > 0) {
+                if (months === 0 && days === 0) {
+                    // Anniversary
+                    return i18n.t(
+                        'INFO_ACQUIRED_YEARS_ANNIVERSARY',
+                        { years },
+                        years,
+                    );
+                }
                 return i18n.t('INFO_ACQUIRED_YEARS_AGO', { years }, years);
             }
             if (months > 0) {
