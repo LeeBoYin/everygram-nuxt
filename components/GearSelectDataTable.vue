@@ -59,7 +59,7 @@
         </PrimeColumn>
         <!-- addtional field: description -->
         <PrimeColumn
-            v-if="addtionalFields?.includes('description')"
+            v-if="additionalFields?.includes('description')"
             field="description"
             :header="$t('LABEL_DESCRIPTION')"
         >
@@ -69,21 +69,21 @@
         </PrimeColumn>
         <!-- addtional field: currency -->
         <PrimeColumn
-            v-if="addtionalFields?.includes('currency')"
+            v-if="additionalFields?.includes('currency')"
             field="currency"
             :header="$t('LABEL_CURRENCY')"
             class="white-space-nowrap"
         />
         <!-- addtional field: price -->
         <PrimeColumn
-            v-if="addtionalFields?.includes('price')"
+            v-if="additionalFields?.includes('price')"
             field="price"
             :header="$t('LABEL_PRICE')"
             class="text-right white-space-nowrap"
         />
         <!-- addtional field: acquired date -->
         <PrimeColumn
-            v-if="addtionalFields?.includes('acquiredDate')"
+            v-if="additionalFields?.includes('acquiredDate')"
             field="acquiredDate"
             :header="$t('LABEL_ACQUIRED_DATE')"
             class="white-space-nowrap"
@@ -109,7 +109,7 @@ const props = defineProps<{
     dataKey: string;
     showPhoto?: boolean;
     filters?: Record<string, any>;
-    addtionalFields?: (keyof Gear)[];
+    additionalFields?: (keyof Gear)[];
 }>();
 const emit = defineEmits<{
     update: [selectedGears: T[]];

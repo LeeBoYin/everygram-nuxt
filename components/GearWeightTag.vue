@@ -1,5 +1,5 @@
 <template>
-    <PrimeTag :class="['gear-weight-tag', `text-${size}`]">
+    <PrimeTag :class="['gear-weight-tag', size && `text-${size}`]">
         {{ formattedWeight }}
     </PrimeTag>
 </template>

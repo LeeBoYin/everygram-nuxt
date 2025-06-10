@@ -81,7 +81,7 @@
                         :selectableGears="formattedGearsData"
                         :selectedGears="selectedGears"
                         dataKey="name"
-                        :addtionalFields="[
+                        :additionalFields="[
                             'description',
                             'currency',
                             'price',
