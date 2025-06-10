@@ -70,8 +70,13 @@ export default function () {
             const now = new Date();
 
             // Check if the date is valid
-            if (isNaN(parsedDate.getTime()) || parsedDate > now) {
+            if (isNaN(parsedDate.getTime())) {
                 return '';
+            }
+
+            // If the date is in the future, return a specific message
+            if (parsedDate > now) {
+                return i18n.t('INFO_ACQUIRED_FUTURE');
             }
 
             // Calculate the difference in years, months, and days

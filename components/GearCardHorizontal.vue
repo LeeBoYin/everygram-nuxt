@@ -3,7 +3,7 @@
         :class="[
             'flex flex-column bg-white border-round-md shadow-1',
             'p-2 lg:p-3',
-            'gap-2 lg:gap-3',
+            'gap-2',
         ]"
     >
         <div class="flex align-items-start justify-content-between">

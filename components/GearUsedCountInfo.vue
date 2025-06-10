@@ -1,5 +1,11 @@
 <template>
-    <div class="gear-used-count-info inline-flex align-items-center gap-1">
+    <div
+        class="gear-used-count-info inline-flex align-items-center gap-1"
+        v-tooltip.bottom="{
+            value: $t('INFO_GEAR_USED_COUNT', { count }, count),
+            class: 'text-xs',
+        }"
+    >
         <span class="gear-used-count-info__icon material-symbols-outlined"
             >landscape</span
         >

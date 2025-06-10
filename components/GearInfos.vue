@@ -17,15 +17,10 @@ import type { Component } from 'vue';
 import CategoryLabel from './CategoryLabel.vue';
 import GearWeightTag from './GearWeightTag.vue';
 import GearUsedCountInfo from './GearUsedCountInfo.vue';
+import GearAgeInfo from './GearAgeInfo.vue';
 import InlineText from './InlineText.vue';
 
-type GearInfo =
-    | 'category'
-    | 'weight'
-    | 'price'
-    | 'acquiredDate'
-    | 'age'
-    | 'usedCount';
+type GearInfo = 'category' | 'weight' | 'price' | 'age' | 'usedCount';
 
 const props = defineProps<{
     gear: Gear;
@@ -51,7 +46,7 @@ function getInfoComponent(
                 component: GearWeightTag,
                 props: {
                     weight: props.gear.weight,
-                    size: isLargeScreen.value ? 'base' : 'xs',
+                    size: isLargeScreen.value ? 'sm' : 'xs',
                 },
             };
         case 'price':
@@ -64,33 +59,17 @@ function getInfoComponent(
                       component: InlineText,
                       props: {
                           text: formattedPrice,
-                          class: isLargeScreen.value ? 'text-base' : 'text-xs',
-                      },
-                  }
-                : null;
-        case 'acquiredDate':
-            const formattedDate = props.gear.acquiredDate
-                ? formatDateString(props.gear.acquiredDate)
-                : null;
-            return formattedDate
-                ? {
-                      component: InlineText,
-                      props: {
-                          text: formattedDate,
-                          class: isLargeScreen.value ? 'text-base' : 'text-xs',
+                          class: isLargeScreen.value ? 'text-sm' : 'text-xs',
                       },
                   }
                 : null;
         case 'age':
-            const formattedAge = props.gear.acquiredDate
-                ? formatAcquiredDate(props.gear.acquiredDate)
-                : null;
-            return formattedAge
+            return props.gear.acquiredDate
                 ? {
-                      component: InlineText,
+                      component: GearAgeInfo,
                       props: {
-                          text: formattedAge,
-                          class: isLargeScreen.value ? 'text-base' : 'text-xs',
+                          date: props.gear.acquiredDate,
+                          class: isLargeScreen.value ? 'text-sm' : 'text-xs',
                       },
                   }
                 : null;
@@ -103,7 +82,7 @@ function getInfoComponent(
                 component: GearUsedCountInfo,
                 props: {
                     count: usedCount,
-                    class: isLargeScreen.value ? 'text-base' : 'text-xs',
+                    class: isLargeScreen.value ? 'text-sm' : 'text-xs',
                 },
             };
 
