@@ -12,6 +12,9 @@
                 // show dashed border when hovering on empty gear photo
                 'border-dashed border-400':
                     !readonly && isHovering && !displayImageUrl,
+                'w-3rem h-3rem': !size || size === 'xs',
+                'w-4rem h-4rem': size === 'sm',
+                'w-6rem h-6rem': size === 'md',
             },
         ]"
     >
@@ -50,6 +53,7 @@ const props = defineProps<{
     gear: Gear;
     readonly?: boolean;
     clickToUpload?: boolean;
+    size?: 'xs' | 'sm' | 'md';
 }>();
 const isLoading = ref(false);
 const userGearsStore = useUserGearsStore();
@@ -97,9 +101,13 @@ const {
 const gearCategoryIcon = computed(
     () => constants.GEAR_CATEGORIES[props.gear.category].icon,
 );
-const displayImageUrl = computed(
-    () => selectedFilePath.value || dataUtils.getGearPhotoUrl(props.gear, 'xs'),
-);
+const displayImageUrl = computed(() => {
+    if (selectedFilePath.value) {
+        return selectedFilePath.value;
+    }
+    const thumbnailSize = props.size === 'md' ? 'sm' : 'xs';
+    return dataUtils.getGearPhotoUrl(props.gear, thumbnailSize);
+});
 </script>
 
 <style scoped lang="scss">

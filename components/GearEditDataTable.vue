@@ -10,9 +10,9 @@
         <PrimeColumn field="photo" :header="$t('LABEL_PHOTO')" class="w-3rem">
             <template #body="{ data }">
                 <GearPhoto
-                    class="w-3rem h-3rem lg:w-4rem lg:h-4rem"
                     :gear="data"
                     clickToUpload
+                    :size="isLargeScreen ? 'sm' : 'xs'"
                 />
             </template>
         </PrimeColumn>
@@ -86,4 +86,5 @@ const emit = defineEmits<{
 }>();
 
 const { formatWeight } = useLangUtils();
+const { isLargeScreen } = useDeviceMeta();
 </script>

@@ -8,9 +8,9 @@
         <PrimeColumn field="photo" :header="$t('LABEL_PHOTO')" class="w-3rem">
             <template #body="{ data }">
                 <GearPhoto
-                    class="w-3rem h-3rem lg:w-4rem lg:h-4rem"
                     :gear="data"
                     :readonly="!editable"
+                    :size="isLargeScreen ? 'sm' : 'xs'"
                 />
             </template>
         </PrimeColumn>

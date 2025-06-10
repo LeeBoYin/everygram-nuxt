@@ -6,12 +6,10 @@
         ]"
     >
         <GearPhoto
-            :class="[
-                'flex-shrink-0',
-                size === 'lg' ? 'w-6rem h-6rem ' : 'w-4rem h-4rem',
-            ]"
+            class="flex-shrink-0"
             :gear="gear"
             readonly
+            :size="size === 'lg' ? 'md' : 'sm'"
         />
         <GearNameWithBrand :gear="gear" :size="size" />
     </div>

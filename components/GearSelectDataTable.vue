@@ -22,9 +22,9 @@
         >
             <template #body="{ data }">
                 <GearPhoto
-                    class="w-3rem h-3rem lg:w-4rem lg:h-4rem"
                     :gear="data"
                     readonly
+                    :size="isLargeScreen ? 'sm' : 'xs'"
                 />
             </template>
         </PrimeColumn>
