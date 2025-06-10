@@ -132,7 +132,7 @@
                                         class: 'hidden',
                                     },
                                 }"
-                                tabindex="-1"
+                                :tabindex="-1"
                             />
                             <PrimeInputNumber
                                 v-model="formState.price"
@@ -143,6 +143,7 @@
                                 "
                                 :invalid="vuelidate.price?.$error"
                                 class="w-full text-right"
+                                @keypress.enter="onSubmit"
                             />
                         </PrimeInputGroup>
                     </FormField>
@@ -153,6 +154,7 @@
                             class="w-full"
                             :dateFormat="constants.DATE_FORMAT"
                             :placeholder="constants.DATE_PLACEHOLDER"
+                            @keypress.enter="onSubmit"
                         />
                     </FormField>
                     <!-- description -->
@@ -311,7 +313,9 @@ watch(isOpen, (newValue) => {
             editingGear.value?.description ?? initialFormState.description;
         formState.price = editingGear.value?.price ?? initialFormState.price;
         formState.currency =
-            editingGear.value?.currency ?? initialFormState.currency;
+            editingGear.value?.currency ??
+            (preferenceUtils.getSelectedCurrencyCode() ||
+                initialFormState.currency);
         formState.acquiredDate = editingGear.value?.acquiredDate
             ? new Date(editingGear.value.acquiredDate)
             : initialFormState.acquiredDate;
@@ -390,6 +394,15 @@ const onSubmit = async () => {
                 'complete-edit',
                 userGearsStore.getGearById(editingGear.value.id),
             );
+
+            // save selected currency to local storage if currency is updated
+            if (
+                gearData.currency &&
+                editingGear.value.currency !== gearData.currency
+            ) {
+                preferenceUtils.saveSelectedCurrency(gearData.currency);
+            }
+
             onCompleteEditGear();
         } else {
             // create new gear first
@@ -419,6 +432,12 @@ const onSubmit = async () => {
             }
             emit('complete-create', newGear);
             onCompleteCreateGear();
+
+            // save selected currency to local storage if it is set
+            if (gearData.currency) {
+                preferenceUtils.saveSelectedCurrency(gearData.currency);
+            }
+
             analyticsUtils.log(constants.ANALYTICS_EVENTS.CREATE_GEAR, {
                 gear_category: gearData.category,
                 user_gear_num: gears.value.length,

@@ -48,9 +48,12 @@ export default function () {
                 return '';
             }
             try {
+                const fraction = constants.CURRENCIES[currency].fraction;
                 return new Intl.NumberFormat(i18n.locale.value, {
                     style: 'currency',
                     currency,
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: fraction,
                 }).format(price);
             } catch (e) {
                 return '';
