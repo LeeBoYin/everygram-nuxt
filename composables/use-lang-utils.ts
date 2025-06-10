@@ -98,13 +98,7 @@ export default function () {
             if (months > 0) {
                 return i18n.t('INFO_ACQUIRED_MONTHS_AGO', { months }, months);
             }
-            if (days > 1) {
-                return i18n.t('INFO_ACQUIRED_DAYS_AGO', { days }, days);
-            }
-            if (days === 1) {
-                return i18n.t('INFO_ACQUIRED_YESTERDAY_AGO');
-            }
-            return i18n.t('INFO_ACQUIRED_TODAY_AGO');
+            return i18n.t('INFO_ACQUIRED_DAYS_AGO', { days }, days);
         },
         gearCategoryToLabel: (category: GearCategory) => {
             if (!constants.GEAR_CATEGORY_KEYS.includes(category)) {

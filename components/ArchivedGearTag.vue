@@ -1,6 +1,6 @@
 <template>
     <PrimeTag
-        :class="['archived-gear-tag cursor-default', `text-${size}`]"
+        :class="['archived-gear-tag', `text-${size}`]"
         v-tooltip.bottom="
             gear.archiveNote
                 ? {

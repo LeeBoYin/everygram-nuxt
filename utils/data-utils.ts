@@ -146,6 +146,18 @@ const getWeightSortedItems = <
             (b.id < a.id ? 1 : -1),
     ) ?? [];
 
+const getGearUsedCount = (gear: Gear, trips: Trip[]): number => {
+    return trips.reduce((count, trip) => {
+        // count once if gear is either in gears or wornGears
+        if (trip.gears && trip.gears[gear.id]) {
+            count += 1;
+        } else if (trip.wornGears && trip.wornGears[gear.id]) {
+            count += 1;
+        }
+        return count;
+    }, 0);
+};
+
 export default {
     groupGearsByCategory,
     groupConsumablesByCategory,
@@ -165,4 +177,5 @@ export default {
     getGearPhotoUrl,
     getTripDays,
     getWeightSortedItems,
+    getGearUsedCount,
 };

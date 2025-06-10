@@ -1,20 +1,15 @@
 import {
     collection,
-    addDoc,
     doc,
-    getDoc,
-    updateDoc,
     onSnapshot,
     serverTimestamp,
-    writeBatch,
-    setDoc,
     getDocs,
     query,
     where,
     deleteField,
     runTransaction,
 } from 'firebase/firestore';
-import type { DocumentReference, DocumentData } from 'firebase/firestore';
+import type { DocumentData } from 'firebase/firestore';
 
 export const useUserGearsStore = defineStore('userGearsStore', () => {
     const db = firebaseUtils.getFirestoreDB();
@@ -30,7 +25,6 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
         gears.value.filter((gear) => gear.isArchived),
     );
     const isFirstFetching = ref(true);
-    const hasBuiltUserGears = ref(false);
     const unsubscribe = ref<null | (() => void)>(null);
     const isInitialized = ref(false);
 

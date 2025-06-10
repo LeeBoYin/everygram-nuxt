@@ -16,6 +16,7 @@
 import type { Component } from 'vue';
 import CategoryLabel from './CategoryLabel.vue';
 import GearWeightTag from './GearWeightTag.vue';
+import GearUsedCountInfo from './GearUsedCountInfo.vue';
 import InlineText from './InlineText.vue';
 
 type GearInfo =
@@ -33,6 +34,8 @@ const props = defineProps<{
 
 const { formatPrice, formatDateString, formatAcquiredDate } = useLangUtils();
 const { isLargeScreen } = useDeviceMeta();
+const userTripsStore = useUserTripsStore();
+const { trips } = storeToRefs(userTripsStore);
 
 function getInfoComponent(
     info: GearInfo,
@@ -91,6 +94,19 @@ function getInfoComponent(
                       },
                   }
                 : null;
+        case 'usedCount':
+            const usedCount = dataUtils.getGearUsedCount(
+                props.gear,
+                trips.value,
+            );
+            return {
+                component: GearUsedCountInfo,
+                props: {
+                    count: usedCount,
+                    class: isLargeScreen.value ? 'text-base' : 'text-xs',
+                },
+            };
+
         default:
             return null;
     }

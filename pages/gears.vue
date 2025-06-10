@@ -179,7 +179,11 @@
                                     <template #info-right>
                                         <GearInfos
                                             :gear="gear"
-                                            :infos="['price', 'age']"
+                                            :infos="[
+                                                'usedCount',
+                                                'price',
+                                                'age',
+                                            ]"
                                             class="text-color-lighter"
                                         />
                                     </template>

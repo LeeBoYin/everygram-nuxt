@@ -23,7 +23,7 @@ const sortedGears = computed(() =>
     display: grid;
     gap: 0.75rem;
     @media (min-width: $lg) {
-        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(375px, 1fr));
         gap: 1rem;
     }
 }
