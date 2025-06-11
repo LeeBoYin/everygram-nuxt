@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="hidden lg:block">
+        <div v-if="isLargeScreen">
             <PrimeButton
                 type="button"
                 rounded
@@ -25,7 +25,7 @@
                 <TripShareContent :trip="trip" />
             </PrimeOverlayPanel>
         </div>
-        <div class="lg:hidden">
+        <div v-else>
             <PrimeButton
                 type="button"
                 rounded
@@ -60,6 +60,8 @@ const props = defineProps<{
     severity?: string;
     size?: 'small' | 'large';
 }>();
+
+const { isLargeScreen } = useDeviceMeta();
 
 // desktop overlay panel
 const overlayPanel = ref();

@@ -1,6 +1,7 @@
 <template>
     <div
         :class="[
+            'gear-card-horizontal',
             'flex flex-column bg-white border-round-md shadow-1',
             'p-2 lg:p-3',
             'gap-2',
@@ -19,6 +20,7 @@
                 @gear-unarchive="$emit('gear-unarchive', $event)"
                 @gear-delete="$emit('gear-delete', $event)"
                 @gear-remove="$emit('gear-remove', $event)"
+                class="gear-card-horizontal__actions"
             />
         </div>
         <div class="flex align-items-center justify-content-between gap-2">
@@ -47,3 +49,18 @@ defineEmits<{
 
 const { isLargeScreen } = useDeviceMeta();
 </script>
+
+<style lang="scss">
+@import '~/assets/theme/primeflex/core/_variables.scss';
+.gear-card-horizontal {
+    &__actions {
+        position: relative;
+        top: -0.25rem;
+        right: -0.25rem;
+        @media (min-width: $lg) {
+            top: -0.5rem;
+            right: -0.5rem;
+        }
+    }
+}
+</style>

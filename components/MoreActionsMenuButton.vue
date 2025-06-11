@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="hidden lg:block">
+        <div v-if="isLargeScreen">
             <PrimeButton
                 type="button"
                 rounded
@@ -21,7 +21,7 @@
                 :popup="true"
             />
         </div>
-        <div class="lg:hidden">
+        <div v-else>
             <PrimeButton
                 type="button"
                 rounded
@@ -55,6 +55,8 @@ const props = defineProps<{
     severity?: string;
     size?: 'small' | 'large';
 }>();
+
+const { isLargeScreen } = useDeviceMeta();
 
 // desktop menu
 const menuId = _uniqueId('overlay_menu_');
