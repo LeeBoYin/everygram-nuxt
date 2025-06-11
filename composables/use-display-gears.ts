@@ -38,14 +38,16 @@ export default function () {
             isFiltered.value = false;
             return;
         }
-        // filter by gear name or brand
+        // filter by gear name or brand or description
         filteredGears.value = visibleGears.value.filter(
             (gear) =>
                 gear.name.toLocaleLowerCase().includes(searchText) ||
                 (gear.brand &&
                     formatBrand(gear.brand)
                         .toLocaleLowerCase()
-                        .includes(searchText)),
+                        .includes(searchText)) ||
+                (gear.description &&
+                    gear.description.toLocaleLowerCase().includes(searchText)),
         );
         isFiltered.value = true;
     }, 500);

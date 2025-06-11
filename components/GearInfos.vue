@@ -42,6 +42,7 @@ const userTripsStore = useUserTripsStore();
 const { trips } = storeToRefs(userTripsStore);
 
 function getInfoComponent(
+    gear: Gear,
     info: GearInfo,
 ): { component: Component; props?: Record<string, any> } | null {
     switch (info) {
@@ -49,27 +50,27 @@ function getInfoComponent(
             return {
                 component: GearCategoryAvatar,
                 props: {
-                    category: props.gear.category,
+                    category: gear.category,
                     size: 'small',
                 },
             };
         case 'category':
             return {
                 component: CategoryLabel,
-                props: { category: props.gear.category },
+                props: { category: gear.category },
             };
         case 'weight':
             return {
                 component: GearWeightTag,
                 props: {
-                    weight: props.gear.weight,
+                    weight: gear.weight,
                     size: isLargeScreen.value ? 'sm' : 'xs',
                 },
             };
         case 'price':
             const formattedPrice =
-                props.gear.currency && isNumber(props.gear.price)
-                    ? formatPrice(props.gear.currency, props.gear.price)
+                gear.currency && isNumber(gear.price)
+                    ? formatPrice(gear.currency, gear.price)
                     : null;
             return formattedPrice
                 ? {
@@ -81,20 +82,17 @@ function getInfoComponent(
                   }
                 : null;
         case 'age':
-            return props.gear.acquiredDate
+            return gear.acquiredDate
                 ? {
                       component: GearAgeInfo,
                       props: {
-                          date: props.gear.acquiredDate,
+                          date: gear.acquiredDate,
                           class: isLargeScreen.value ? 'text-sm' : 'text-xs',
                       },
                   }
                 : null;
         case 'usedCount':
-            const usedCount = dataUtils.getGearUsedCount(
-                props.gear,
-                trips.value,
-            );
+            const usedCount = dataUtils.getGearUsedCount(gear, trips.value);
             return {
                 component: GearUsedCountInfo,
                 props: {
@@ -104,11 +102,11 @@ function getInfoComponent(
             };
 
         case 'archived':
-            return props.gear.isArchived
+            return gear.isArchived
                 ? {
                       component: ArchivedGearTag,
                       props: {
-                          gear: props.gear,
+                          gear,
                           size: isLargeScreen.value ? 'sm' : 'xs',
                       },
                   }
@@ -121,7 +119,7 @@ function getInfoComponent(
 
 const infoComponents = computed(() => {
     return props.infos
-        .map((info) => getInfoComponent(info))
+        .map((info) => getInfoComponent(props.gear, info))
         .filter((infoComponent) => infoComponent !== null);
 });
 </script>

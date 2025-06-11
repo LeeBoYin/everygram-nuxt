@@ -257,7 +257,7 @@ const selectableCategories = computed(() =>
 // form state and validation rules
 const initialFormState = {
     name: '',
-    weight: 0,
+    weight: undefined as number | undefined,
     brand: undefined as string | undefined,
     category: undefined as GearCategory | undefined,
     addToGears: true,
@@ -299,7 +299,7 @@ const currencyOptions = computed(() =>
 watch(isOpen, (newValue) => {
     if (newValue) {
         formState.name = editingGear.value?.name ?? initialFormState.name;
-        formState.weight = editingGear.value?.weight ?? initialFormState.weight;
+        formState.weight = editingGear.value?.weight || initialFormState.weight; // empty if not set or 0
         formState.brand =
             editingGear.value?.brand?.key ??
             editingGear.value?.brand?.custom ??

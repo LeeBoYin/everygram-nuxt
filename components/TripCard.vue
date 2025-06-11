@@ -2,7 +2,7 @@
     <div
         :class="[
             'trip-card border-round-md overflow-hidden bg-white flex flex-column w-full',
-            'shadow-1 hover:shadow-2',
+            'shadow-1 hover:shadow-3',
         ]"
     >
         <!-- card image -->

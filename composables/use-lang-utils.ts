@@ -46,7 +46,7 @@ export default function () {
             if (
                 typeof price !== 'number' ||
                 isNaN(price) ||
-                price <= 0 ||
+                price < 0 ||
                 typeof currency !== 'string' ||
                 constants.CURRENCY_CODES.indexOf(currency) < 0
             ) {
