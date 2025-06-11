@@ -48,9 +48,14 @@
                                         />
                                     </template>
                                     <template #info-right>
-                                        <ArchivedGearTag
+                                        <GearInfos
                                             :gear="gear"
-                                            size="sm"
+                                            :infos="[
+                                                'usedCount',
+                                                'price',
+                                                'archived',
+                                            ]"
+                                            class="text-color-light"
                                         />
                                     </template>
                                 </GearCardHorizontal>

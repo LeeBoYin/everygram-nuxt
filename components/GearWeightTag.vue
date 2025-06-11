@@ -10,7 +10,9 @@ const props = defineProps<{
     size?: 'xs' | 'sm' | 'base';
 }>();
 const { formatWeight } = useLangUtils();
-const formattedWeight = formatWeight(props.weight);
+const formattedWeight = computed(() =>
+    props.weight ? formatWeight(props.weight) : '-',
+);
 </script>
 
 <style lang="scss">

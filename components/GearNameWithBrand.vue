@@ -16,7 +16,7 @@
             :class="[
                 'gear-name-with-brand__name',
                 'line-clamp-1',
-                size === 'lg' ? 'text-base lg:text-lg' : 'text-sm lg:text-base',
+                'text-sm lg:text-base',
             ]"
         >
             {{ gear.name }}

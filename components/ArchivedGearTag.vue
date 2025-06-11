@@ -1,6 +1,6 @@
 <template>
     <PrimeTag
-        :class="['archived-gear-tag', `text-${size}`]"
+        :class="['archived-gear-tag', size && `text-${size}`]"
         v-tooltip.bottom="
             gear.archiveNote
                 ? {

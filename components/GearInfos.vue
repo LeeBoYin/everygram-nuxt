@@ -18,9 +18,16 @@ import CategoryLabel from './CategoryLabel.vue';
 import GearWeightTag from './GearWeightTag.vue';
 import GearUsedCountInfo from './GearUsedCountInfo.vue';
 import GearAgeInfo from './GearAgeInfo.vue';
+import ArchivedGearTag from './ArchivedGearTag.vue';
 import InlineText from './InlineText.vue';
 
-type GearInfo = 'category' | 'weight' | 'price' | 'age' | 'usedCount';
+type GearInfo =
+    | 'category'
+    | 'weight'
+    | 'price'
+    | 'age'
+    | 'usedCount'
+    | 'archived';
 
 const props = defineProps<{
     gear: Gear;
@@ -85,6 +92,17 @@ function getInfoComponent(
                     class: isLargeScreen.value ? 'text-sm' : 'text-xs',
                 },
             };
+
+        case 'archived':
+            return props.gear.isArchived
+                ? {
+                      component: ArchivedGearTag,
+                      props: {
+                          gear: props.gear,
+                          size: isLargeScreen.value ? 'sm' : 'xs',
+                      },
+                  }
+                : null;
 
         default:
             return null;

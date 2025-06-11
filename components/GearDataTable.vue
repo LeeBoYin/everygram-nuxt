@@ -41,7 +41,10 @@
                     <div>
                         {{ data.weight ? formatWeight(data.weight) : '-' }}
                     </div>
-                    <div v-if="hasQuantity && data.quantity > 1">
+                    <div
+                        v-if="hasQuantity && data.quantity > 1"
+                        class="text-color-light"
+                    >
                         x {{ data.quantity }}
                     </div>
                 </div>

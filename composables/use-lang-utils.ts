@@ -15,13 +15,18 @@ export default function () {
             });
         },
         formatWeight: (weight: number, unit?: 'g' | 'kg') => {
-            const weightG = i18n.t('INFO_WEIGHT_GRAM', { weight }, weight);
+            const roundedWeight = _round(weight);
+            const weightG = i18n.t(
+                'INFO_WEIGHT_GRAM',
+                { weight: roundedWeight },
+                roundedWeight,
+            );
             const weightKg = i18n.t(
                 'INFO_WEIGHT_KILOGRAM',
                 {
-                    weight: _round(weight / 1000, 2),
+                    weight: _round(roundedWeight / 1000, 2),
                 },
-                weight,
+                roundedWeight,
             );
             if (unit === 'g') {
                 return weightG;
@@ -29,7 +34,7 @@ export default function () {
             if (unit === 'kg') {
                 return weightKg;
             }
-            return weight < 1000 ? weightG : weightKg;
+            return roundedWeight < 1000 ? weightG : weightKg;
         },
         formatBrand: (brand: GearBrand) => {
             if (brand?.key && constants.GEAR_BRANDS[brand.key]) {

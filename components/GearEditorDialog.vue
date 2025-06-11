@@ -328,7 +328,7 @@ const isSaving = ref<boolean>(false);
 const userGearsStore = useUserGearsStore();
 const { gears } = storeToRefs(userGearsStore);
 const gearPhotoUrl = computed(() =>
-    editingGear.value ? dataUtils.getGearPhotoUrl(editingGear.value, 'xs') : '',
+    editingGear.value ? dataUtils.getGearPhotoUrl(editingGear.value, 'sm') : '',
 );
 const compressedPhotoFile = ref<Blob | null>(null);
 const { uploadFile } = useStorage();
