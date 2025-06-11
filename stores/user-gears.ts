@@ -270,10 +270,13 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
                 // archive / unarchive  gear
                 const hasGearBeenArchived =
                     gearDocSnap.data()?.isArchived || false;
-                if (!hasGearBeenArchived && gearData.isArchived) {
+                if (!hasGearBeenArchived && gearData.isArchived === true) {
                     // set archived timestamp if isArchived is set from false to true
                     formattedGearData.archived = serverTimestamp();
-                } else if (hasGearBeenArchived && !gearData.isArchived) {
+                } else if (
+                    hasGearBeenArchived &&
+                    gearData.isArchived === false
+                ) {
                     // clear archive data if isArchived is set from true to false (explicitly)
                     formattedGearData.isArchived = undefined;
                     formattedGearData.archived = undefined;

@@ -83,6 +83,7 @@ const {
 const userGearsStore = useUserGearsStore();
 const isSaving = ref(false);
 const i18n = useI18n();
+const toast = useToast();
 
 const initialFormState = {
     archiveReason: null,
@@ -159,6 +160,15 @@ const onSubmit = async () => {
             'complete-archive',
             userGearsStore.getGearById(archivingGear.value.id),
         );
+
+        toast.add({
+            severity: 'secondary',
+            summary: i18n.t('FEEDBACK_GEAR_ARCHIVED', {
+                gearName: archivingGear.value.name,
+            }),
+            life: constants.TOAST_TTL,
+        });
+
         onCompleteArchiveGear();
     } catch (e) {
         // handle error (optional)

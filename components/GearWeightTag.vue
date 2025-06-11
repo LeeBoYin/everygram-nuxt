@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 const { formatWeight } = useLangUtils();
 const formattedWeight = computed(() =>
-    props.weight ? formatWeight(props.weight) : '-',
+    props.weight ? formatWeight(props.weight) : '-- g',
 );
 </script>
 

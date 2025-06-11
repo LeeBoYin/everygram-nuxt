@@ -22,12 +22,8 @@
                             {{ year === 'others' ? $t('LABEL_NO_DATE') : year }}
                         </h2>
                         <!-- gear cards -->
-                        <div class="grid">
-                            <div
-                                v-for="gear in gears"
-                                :key="gear.id"
-                                class="col-12 md:col-6"
-                            >
+                        <GearCardList :gears="gears">
+                            <template #gear-card="{ gear }">
                                 <GearCardHorizontal
                                     :gear="gear"
                                     :action-items="[
@@ -38,13 +34,17 @@
                                     ]"
                                     @gear-edit="onEditGear"
                                     @gear-edit-archive="onEditArchivedGear"
-                                    @gear-unarchive="unarchiveGear"
+                                    @gear-unarchive="onUnarchiveGear"
                                     @gear-delete="confirmDeleteGear"
                                 >
                                     <template #info-left>
                                         <GearInfos
                                             :gear="gear"
-                                            :infos="['category', 'weight']"
+                                            :infos="[
+                                                'category-avatar',
+                                                'weight',
+                                            ]"
+                                            class="text-color-light"
                                         />
                                     </template>
                                     <template #info-right>
@@ -59,8 +59,8 @@
                                         />
                                     </template>
                                 </GearCardHorizontal>
-                            </div>
-                        </div>
+                            </template>
+                        </GearCardList>
                     </div>
                 </div>
             </div>
@@ -86,6 +86,8 @@ const userGearsStore = useUserGearsStore();
 const { isFetchingGears, archivedGears } = storeToRefs(userGearsStore);
 const { unarchiveGear } = useArchiveGear();
 const { confirmDeleteGear } = useDeleteGear();
+const i18n = useI18n();
+const toast = useToast();
 
 // for GearEditor
 const { onEditGear } = useEditGear();
@@ -117,4 +119,13 @@ const archivedGearsByYear = computed(() => {
 
     return grouped;
 });
+
+const onUnarchiveGear = async (gear: Gear) => {
+    await unarchiveGear(gear);
+    toast.add({
+        severity: 'secondary',
+        summary: i18n.t('FEEDBACK_GEAR_UNARCHIVED', { gearName: gear.name }),
+        life: constants.TOAST_TTL,
+    });
+};
 </script>

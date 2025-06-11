@@ -14,6 +14,7 @@
 
 <script lang="ts" setup>
 import type { Component } from 'vue';
+import GearCategoryAvatar from './GearCategoryAvatar.vue';
 import CategoryLabel from './CategoryLabel.vue';
 import GearWeightTag from './GearWeightTag.vue';
 import GearUsedCountInfo from './GearUsedCountInfo.vue';
@@ -22,6 +23,7 @@ import ArchivedGearTag from './ArchivedGearTag.vue';
 import InlineText from './InlineText.vue';
 
 type GearInfo =
+    | 'category-avatar'
     | 'category'
     | 'weight'
     | 'price'
@@ -34,7 +36,7 @@ const props = defineProps<{
     infos: GearInfo[];
 }>();
 
-const { formatPrice, formatDateString, formatAcquiredDate } = useLangUtils();
+const { formatPrice } = useLangUtils();
 const { isLargeScreen } = useDeviceMeta();
 const userTripsStore = useUserTripsStore();
 const { trips } = storeToRefs(userTripsStore);
@@ -43,6 +45,14 @@ function getInfoComponent(
     info: GearInfo,
 ): { component: Component; props?: Record<string, any> } | null {
     switch (info) {
+        case 'category-avatar':
+            return {
+                component: GearCategoryAvatar,
+                props: {
+                    category: props.gear.category,
+                    size: 'small',
+                },
+            };
         case 'category':
             return {
                 component: CategoryLabel,

@@ -430,7 +430,7 @@ const onAddGearToGears = async (gear: Gear) => {
         summary: i18n.t('INFO_GEAR_ADDED_TO_GEARS', {
             gearName: gear.name,
         }),
-        life: 3000,
+        life: constants.TOAST_TTL,
     });
 };
 

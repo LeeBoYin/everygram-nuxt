@@ -115,6 +115,8 @@ const CURRENCY_CODES = Object.keys(CURRENCIES) as CurrencyCode[];
 const DATE_FORMAT = 'yy-mm-dd';
 const DATE_PLACEHOLDER = 'yyyy-mm-dd';
 
+const TOAST_TTL = 3000; // 3 seconds
+
 export default {
     ROLES,
     COLORS,
@@ -141,4 +143,5 @@ export default {
     CURRENCY_CODES,
     DATE_FORMAT,
     DATE_PLACEHOLDER,
+    TOAST_TTL,
 };

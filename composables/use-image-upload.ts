@@ -45,7 +45,7 @@ export default function (
             toast.add({
                 severity: 'error',
                 summary: i18n.t('ERROR_IMAGE_FORMAT_NOT_SUPPORTED'),
-                life: 300000,
+                life: constants.TOAST_TTL,
             });
             return;
         }

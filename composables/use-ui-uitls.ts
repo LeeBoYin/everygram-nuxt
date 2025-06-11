@@ -28,7 +28,7 @@ export default function () {
                     toast.add({
                         severity: 'secondary',
                         summary: toastSummary,
-                        life: 3000,
+                        life: constants.TOAST_TTL,
                     });
                 },
             });
