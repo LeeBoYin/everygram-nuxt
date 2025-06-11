@@ -70,7 +70,11 @@
                             <PrimeButton
                                 severity="secondary"
                                 rounded
-                                :label="$t('ACTION_CREATE_GEAR')"
+                                :label="
+                                    isLargeScreen
+                                        ? $t('ACTION_CREATE_GEAR')
+                                        : $t('ACTION_CREATE')
+                                "
                                 icon="pi pi-plus"
                                 @click="() => onCreateGear()"
                             />
@@ -238,6 +242,7 @@ definePageMeta({
 });
 
 const { gearCategoryToLabel } = useLangUtils();
+const { isLargeScreen } = useDeviceMeta();
 const i18n = useI18n();
 
 // for GearEditor
@@ -285,6 +290,4 @@ const mainClass = 'col-12 md:col-9 lg:col-10';
 useHead({
     title: i18n.t('PAGE_GEARS'),
 });
-
-const { isLargeScreen } = useDeviceMeta();
 </script>

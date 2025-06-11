@@ -1,6 +1,9 @@
 <template>
     <div
-        class="trip-card border-round-md overflow-hidden shadow-1 bg-white flex flex-column w-full"
+        :class="[
+            'trip-card border-round-md overflow-hidden bg-white flex flex-column w-full',
+            'shadow-1 hover:shadow-2',
+        ]"
     >
         <!-- card image -->
         <picture class="trip-card__image relative">
@@ -82,6 +85,10 @@ const days = computed(() => dataUtils.getTripDays(props.trip));
 @import '~/assets/theme/primeflex/core/_variables.scss';
 
 .trip-card {
+    transition-property: box-shadow;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in;
+
     &__image {
         &,
         & > img {

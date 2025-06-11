@@ -10,7 +10,11 @@
                 <PrimeButton
                     severity="secondary"
                     rounded
-                    :label="$t('ACTION_CREATE_TRIP')"
+                    :label="
+                        isLargeScreen
+                            ? $t('ACTION_CREATE_TRIP')
+                            : $t('ACTION_CREATE')
+                    "
                     icon="pi pi-plus"
                     @click="onCreateTrip"
                 />
@@ -63,6 +67,7 @@ const { gearMap } = storeToRefs(userGearsStore);
 const userTripsStore = useUserTripsStore();
 const { trips, isFetchingTrips } = storeToRefs(userTripsStore);
 const { onCreateTrip } = useEditTrip();
+const { isLargeScreen } = useDeviceMeta();
 const i18n = useI18n();
 const sortedTrips = computed(() =>
     trips.value.sort((a, b) => {

@@ -31,9 +31,6 @@ function initializeDeviceMeta() {
         window.addEventListener('resize', screenSizeListener);
         isTouchDevice.value =
             'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        onUnmounted(() => {
-            window.removeEventListener('resize', screenSizeListener);
-        });
     }
 }
 
