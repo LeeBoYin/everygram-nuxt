@@ -4,10 +4,30 @@
             <TripHeader :trip="tripShare">
                 <template #actions>
                     <div class="flex align-items-center gap-1">
-                        <UserLabel :user="tripShare.owner" />
+                        <UserLabel
+                            :user="{
+                                ...tripShare.owner,
+                                ...(isOwnerViewing
+                                    ? {
+                                          displayName: $t('LABEL_YOU'),
+                                      }
+                                    : {}),
+                            }"
+                        />
                         <div class="text-color-lighter">
                             {{ $t('INFO_CREATED_THIS_TRIP') }}
                         </div>
+                        <template v-if="isOwnerViewing">
+                            <VerticalSeparatorLine class="text-color-lighter" />
+                            <NuxtLink
+                                :to="`/trip/${tripId}`"
+                                class="text-primary mx-1"
+                                target="_blank"
+                            >
+                                {{ $t('ACTION_EDIT') }}
+                                <i class="pi pi-external-link text-xs"></i>
+                            </NuxtLink>
+                        </template>
                     </div>
                 </template>
             </TripHeader>
@@ -231,4 +251,15 @@ function incrementTripShareViewIfFirstVisit(tripId: string) {
         // ignore error, do not break page
     }
 }
+
+// for showing trip owner actions
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
+const userTripsStore = useUserTripsStore();
+const { tripMap } = storeToRefs(userTripsStore);
+const isOwnerViewing = computed(() => {
+    return user.value && tripMap.value && tripMap.value[tripId]
+        ? tripMap.value[tripId].role[user.value.uid] === constants.ROLES.OWNER
+        : false;
+});
 </script>

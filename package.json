@@ -39,6 +39,7 @@
         "pinia": "^2.1.7",
         "primeicons": "^7.0.0",
         "primevue": "^3.52.0",
+        "ua-parser-js": "^2.0.3",
         "uuid": "^9.0.1"
     },
     "lint-staged": {

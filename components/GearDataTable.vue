@@ -22,10 +22,10 @@
                     :gear="data"
                     :size="isLargeScreen ? 'lg' : 'md'"
                 >
-                    <template #extra-info>
-                        <NotInGearsIcon v-if="editable && data.isForOneTrip" />
+                    <template v-if="editable" #extra-info>
+                        <NotInGearsIcon v-if="data.isForOneTrip" />
                         <ArchivedGearTag
-                            v-if="editable && data.isArchived"
+                            v-if="data.isArchived"
                             :gear="data"
                             size="xs"
                         />

@@ -227,6 +227,7 @@
     "LABEL_TRIP_DATES": "Trip Dates",
     "LABEL_WEIGHT": "Weight",
     "LABEL_WORN_GEARS": "Worn Gears",
+    "LABEL_YOU": "You",
     "MESSAGE_CONFIRM_DELETE_CONSUMABLE": "Are you sure you want to delete {consumableName}?",
     "MESSAGE_CONFIRM_DELETE_GEAR_FROM_TRIP": "This gear is not in your Gears. Are you sure you want to delete {gearName}",
     "MESSAGE_CONFIRM_DELETE_GEAR": "Are you sure you want to delete {gearName}?\nThis gear will be removed from all trips once deleted.",

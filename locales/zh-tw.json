@@ -227,6 +227,7 @@
     "LABEL_TRIP_DATES": "行程日期",
     "LABEL_WEIGHT": "重量",
     "LABEL_WORN_GEARS": "身上穿著",
+    "LABEL_YOU": "你",
     "MESSAGE_CONFIRM_DELETE_CONSUMABLE": "你確定要刪除「{consumableName}」嗎？",
     "MESSAGE_CONFIRM_DELETE_GEAR_FROM_TRIP": "「{gearName}」不在裝備庫中，你確定要從行程中移除嗎？",
     "MESSAGE_CONFIRM_DELETE_GEAR": "你確定要刪除「{gearName}」嗎？\n刪除的裝備將會從所有行程中移除！",

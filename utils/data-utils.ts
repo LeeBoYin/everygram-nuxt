@@ -170,7 +170,7 @@ const getGearUsedCount = (gear: Gear, trips: Trip[]): number => {
  *
  * Invlaid fields will be set to undefined, and then deleted by the database update function.
  */
-const formatFormStateToEdtingGear = (formState: any): EditingGear => {
+const formatFormStateToEditingGear = (formState: any): EditingGear => {
     const gearData: EditingGear = {};
 
     // name (required)
@@ -271,5 +271,5 @@ export default {
     getTripDays,
     getWeightSortedItems,
     getGearUsedCount,
-    formatFormStateToEdtingGear,
+    formatFormStateToEditingGear,
 };

@@ -338,7 +338,7 @@ const onSubmit = async () => {
         return;
     }
 
-    const gearData = dataUtils.formatFormStateToEdtingGear(formState);
+    const gearData = dataUtils.formatFormStateToEditingGear(formState);
 
     // if not adding to gears, set isForOneTrip to true
     if (props.isInTripPage && !isEditingGear.value && !formState.addToGears) {
