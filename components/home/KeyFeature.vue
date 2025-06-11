@@ -12,7 +12,10 @@
                     <PrimeTag
                         class="p-tag-primary-light flex align-items-center gap-2 p-2 mb-3"
                     >
-                        <img src="/image/key-feature-stars.svg" />
+                        <img
+                            src="/image/key-feature-stars.svg"
+                            alt="Key Feature"
+                        />
                         <span class="text-sm">KEY FEATURE</span>
                     </PrimeTag>
                     <h2 class="text-3xl lg:text-5xl mb-4">
