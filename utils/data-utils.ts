@@ -158,6 +158,99 @@ const getGearUsedCount = (gear: Gear, trips: Trip[]): number => {
     }, 0);
 };
 
+/**
+ * Format form state to EditingGear object
+ * This function is used to convert the form state from the gear editing form
+ * to the EditingGear object that can be used to update the gear in the database.
+ * It handles the conversion of various fields.
+ *
+ * Only the fields that are present in the form state will be included in the result.
+ * If a field is not present in the form state, it will not be included in the result, hence
+ * it is safe to use this function to update the gear without worrying about missing fields.
+ *
+ * Invlaid fields will be set to undefined, and then deleted by the database update function.
+ */
+const formatFormStateToEdtingGear = (formState: any): EditingGear => {
+    const gearData: EditingGear = {};
+
+    // name (required)
+    if ('name' in formState) {
+        gearData.name =
+            typeof formState?.name === 'string'
+                ? _trim(formState.name) || ''
+                : '';
+    }
+
+    // weight (required)
+    if ('weight' in formState) {
+        gearData.weight =
+            typeof formState?.weight === 'number' ||
+            typeof formState?.weight === 'string'
+                ? +formState.weight
+                : 0;
+    }
+
+    // category (required)
+    if ('category' in formState) {
+        gearData.category =
+            typeof formState?.category === 'string' &&
+            constants.GEAR_CATEGORY_KEYS.includes(formState.category)
+                ? formState.category
+                : 'others';
+    }
+
+    // brand (optional)
+    if ('brand' in formState) {
+        if (
+            typeof formState.brand === 'string' &&
+            constants.GEAR_BRANDS[formState.brand]
+        ) {
+            gearData.brand = { key: formState.brand };
+        } else if (typeof formState.brand === 'string') {
+            gearData.brand = { custom: formState.brand };
+        } else {
+            gearData.brand = undefined;
+        }
+    }
+
+    // description (optional)
+    if ('description' in formState) {
+        gearData.description =
+            typeof formState?.description === 'string'
+                ? _trim(formState.description) || undefined
+                : undefined;
+    }
+
+    // currency and price (optional)
+    if ('price' in formState && 'currency' in formState) {
+        if (
+            isNumber(formState?.price) &&
+            typeof formState?.currency === 'string' &&
+            constants.CURRENCY_CODES.includes(formState.currency)
+        ) {
+            gearData.price = formState.price;
+            gearData.currency = formState.currency;
+        } else {
+            gearData.price = undefined;
+            gearData.currency = undefined;
+        }
+    }
+
+    // acquiredDate (optional)
+    if ('acquiredDate' in formState) {
+        if (
+            formState?.acquiredDate instanceof Date &&
+            !isNaN(formState.acquiredDate.getTime())
+        ) {
+            gearData.acquiredDate = formatDateToString(formState.acquiredDate);
+        } else {
+            gearData.acquiredDate = undefined;
+        }
+    }
+
+    return gearData;
+};
+
 export default {
     groupGearsByCategory,
     groupConsumablesByCategory,
@@ -178,4 +271,5 @@ export default {
     getTripDays,
     getWeightSortedItems,
     getGearUsedCount,
+    formatFormStateToEdtingGear,
 };

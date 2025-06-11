@@ -23,10 +23,10 @@
                     :invalid="vuelidate.archiveReason.$error"
                 />
             </FormField>
-            <!-- Custom note input -->
+            <!-- Archive note input -->
             <FormField :label="$t('LABEL_ARCHIVE_NOTE')">
                 <PrimeInputText
-                    v-model="formState.customNote"
+                    v-model="formState.archiveNote"
                     class="w-full"
                     :maxlength="constants.LIMIT.maxGearArchiveNoteLength"
                     @keypress.enter="onSubmit"
@@ -86,11 +86,11 @@ const i18n = useI18n();
 
 const initialFormState = {
     archiveReason: null,
-    customNote: '',
+    archiveNote: '',
 };
 const formState = reactive<{
     archiveReason: GearArchiveReason | null;
-    customNote: string;
+    archiveNote: string;
 }>({ ...initialFormState });
 
 const formValidators = useFormValidators();
@@ -98,7 +98,7 @@ const formRules = {
     archiveReason: {
         required: formValidators.required,
     },
-    customNote: {
+    archiveNote: {
         maxLength: formValidators.maxLength(
             constants.LIMIT.maxGearArchiveNoteLength,
         ),
@@ -127,8 +127,8 @@ watch(
             formState.archiveReason =
                 archivingGear.value.archiveReason ||
                 initialFormState.archiveReason;
-            formState.customNote =
-                archivingGear.value.archiveNote || initialFormState.customNote;
+            formState.archiveNote =
+                archivingGear.value.archiveNote || initialFormState.archiveNote;
             vuelidate.value.$reset();
         } else {
             Object.assign(formState, initialFormState);
@@ -152,7 +152,7 @@ const onSubmit = async () => {
         await archiveGear({
             gear: archivingGear.value,
             archiveReason: formState.archiveReason,
-            customNote: formState.customNote,
+            archiveNote: formState.archiveNote,
         });
 
         emit(

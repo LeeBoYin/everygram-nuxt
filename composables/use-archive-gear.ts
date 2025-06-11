@@ -9,17 +9,20 @@ export default function () {
     const archiveGear = async ({
         gear,
         archiveReason,
-        customNote,
+        archiveNote,
     }: {
         gear: Gear;
         archiveReason: GearArchiveReason;
-        customNote: string;
+        archiveNote: string;
     }) => {
+        if (!gear || !archiveReason) {
+            throw new Error('Gear and archive reason are required');
+        }
+
         const updateData: EditingGear = {
             isArchived: true,
             archiveReason: archiveReason,
-            // Only include custom note if 'other' is selected
-            ...(customNote ? { archiveNote: customNote } : {}),
+            ...(archiveNote ? { archiveNote } : {}),
         };
 
         await userGearsStore.updateGear({

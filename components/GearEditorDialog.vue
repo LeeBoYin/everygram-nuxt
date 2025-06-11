@@ -338,34 +338,11 @@ const onSubmit = async () => {
         return;
     }
 
-    const gearData: EditingGear = {
-        name: formState.name,
-        weight: formState.weight || 0,
-        category: formState.category || 'others',
-    };
+    const gearData = dataUtils.formatFormStateToEdtingGear(formState);
 
     // if not adding to gears, set isForOneTrip to true
     if (props.isInTripPage && !isEditingGear.value && !formState.addToGears) {
         gearData.isForOneTrip = true;
-    }
-
-    // optional fields
-    if (formState.brand) {
-        gearData.brand = constants.GEAR_BRANDS[formState.brand]
-            ? { key: formState.brand }
-            : { custom: formState.brand };
-    }
-    if (formState.description) {
-        gearData.description = formState.description;
-    }
-    if (formState.price !== undefined && formState.currency) {
-        gearData.price = formState.price;
-        gearData.currency = formState.currency;
-    }
-    if (formState.acquiredDate) {
-        gearData.acquiredDate = dataUtils.formatDateToString(
-            formState.acquiredDate,
-        );
     }
 
     try {
