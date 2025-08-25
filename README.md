@@ -119,6 +119,12 @@ To safely develop new features and avoid breaking production, you should set up 
     firebase login
     ```
 
+    Select your Firebase project (replace with your actual Project ID).
+
+    ```bash
+    firebase use your-project-id
+    ```
+
     Publish rules for Firestore and Storage.
 
     ```bash
