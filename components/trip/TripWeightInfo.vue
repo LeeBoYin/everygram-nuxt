@@ -62,19 +62,23 @@ const props = defineProps<{
     wornGears: GearWithQuantity[];
     consumables: Consumable[];
 }>();
+const { gears, wornGears, consumables } = toRefs(props);
+const {
+    gearsWeight,
+    gearWeightByCategory,
+    consumablesWeight,
+    consumableWeightByCategory,
+    backpackWeight,
+    wornGearsWeight,
+} = useTripWeightData({
+    gearsRef: gears,
+    wornGearsRef: wornGears,
+    consumablesRef: consumables,
+});
 const i18n = useI18n();
 const { formatWeight, gearCategoryToLabel, consumableCategoryToLabel } =
     useLangUtils();
 
-// consumables
-const consumablesByCategory = computed(() =>
-    dataUtils.groupConsumablesByCategory(props.consumables),
-);
-const consumableWeightByCategory = computed(() =>
-    _mapValues(consumablesByCategory.value, (consumables) =>
-        _sumBy(consumables, dataUtils.getConsumableWeight),
-    ),
-);
 const consumablesWeightItems = computed<WeightBarChartSubItem[]>(() =>
     Object.entries(consumableWeightByCategory.value)
         .map(([category, weight]) => ({
@@ -82,27 +86,6 @@ const consumablesWeightItems = computed<WeightBarChartSubItem[]>(() =>
             weight,
         }))
         .sort((a, b) => b.weight - a.weight),
-);
-const consumablesWeight = computed(() =>
-    _sumBy(props.consumables, dataUtils.getConsumableWeight),
-);
-
-// gears
-const gearsByCategory = computed(() =>
-    dataUtils.groupGearsByCategory(props.gears),
-);
-const gearWeightByCategory = computed(() =>
-    _mapValues(gearsByCategory.value, (gears) =>
-        _sumBy(gears, (gear) => (+gear.weight || 0) * gear.quantity),
-    ),
-);
-const gearsWeight = computed(() =>
-    _sumBy(props.gears, (gear) => (+gear.weight || 0) * gear.quantity),
-);
-
-// backpack weight
-const backpackWeight = computed(
-    () => gearsWeight.value + consumablesWeight.value,
 );
 const backpackWeightItems = computed<WeightBarChartItem[]>(() => [
     ...Object.entries(gearWeightByCategory.value).map(([category, weight]) => ({
@@ -122,11 +105,6 @@ const backpackWeightItems = computed<WeightBarChartItem[]>(() => [
           ]
         : []),
 ]);
-
-// worn gears
-const wornGearsWeight = computed(() =>
-    _sumBy(props.wornGears, (gear) => (+gear.weight || 0) * gear.quantity),
-);
 </script>
 
 <style lang="scss">

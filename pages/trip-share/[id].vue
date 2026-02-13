@@ -24,30 +24,41 @@
             </TripHeader>
         </template>
         <template #side>
-            <TripWeightInfo
-                :gears="gearsInTrip"
-                :wornGears="wornGearsInTrip"
-                :consumables="consumablesInTrip"
-            />
-            <NuxtLink
-                to="/"
-                class="block w-full mt-3"
-                @click="
-                    () =>
-                        analyticsUtils.log(
-                            constants.ANALYTICS_EVENTS.CLICK_CTA_BUTTON,
-                            { trip_id: tripShare?.id, page_name: 'trip-share' },
-                        )
-                "
-            >
-                <PrimeButton
-                    :label="$t('ACTION_CREATE_YOUR_GEAR_LIST')"
-                    icon="pi pi-arrow-right"
-                    icon-pos="right"
-                    class="w-full"
-                    rounded
+            <div class="flex flex-column gap-3">
+                <TripWeightTreeMap
+                    :gears="gearsInTrip"
+                    :wornGears="wornGearsInTrip"
+                    :consumables="consumablesInTrip"
+                    :ratio="16 / 9"
                 />
-            </NuxtLink>
+                <TripWeightInfo
+                    :gears="gearsInTrip"
+                    :wornGears="wornGearsInTrip"
+                    :consumables="consumablesInTrip"
+                />
+                <NuxtLink
+                    to="/"
+                    class="block w-full"
+                    @click="
+                        () =>
+                            analyticsUtils.log(
+                                constants.ANALYTICS_EVENTS.CLICK_CTA_BUTTON,
+                                {
+                                    trip_id: tripShare?.id,
+                                    page_name: 'trip-share',
+                                },
+                            )
+                    "
+                >
+                    <PrimeButton
+                        :label="$t('ACTION_CREATE_YOUR_GEAR_LIST')"
+                        icon="pi pi-arrow-right"
+                        icon-pos="right"
+                        class="w-full"
+                        rounded
+                    />
+                </NuxtLink>
+            </div>
         </template>
         <template #main>
             <!-- base gears -->

@@ -58,11 +58,19 @@
             </TripHeader>
         </template>
         <template #side>
-            <TripWeightInfo
-                :gears="gearsInTrip"
-                :wornGears="wornGearsInTrip"
-                :consumables="consumablesInTrip"
-            />
+            <div class="flex flex-column gap-3">
+                <TripWeightTreeMap
+                    :gears="gearsInTrip"
+                    :wornGears="wornGearsInTrip"
+                    :consumables="consumablesInTrip"
+                    :ratio="16 / 9"
+                />
+                <TripWeightInfo
+                    :gears="gearsInTrip"
+                    :wornGears="wornGearsInTrip"
+                    :consumables="consumablesInTrip"
+                />
+            </div>
         </template>
         <template #main>
             <!-- base gears -->

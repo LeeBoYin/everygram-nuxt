@@ -1,4 +1,5 @@
 import type { Timestamp } from '@firebase/firestore';
+import type { Input as SquarifyInput } from 'squarify';
 
 declare global {
     type UserMeta = {
@@ -172,12 +173,17 @@ declare global {
         weight: number;
         label: string;
     };
-    type WeightBarChartItem = {
-        weight: number;
+    type WeighCharttItem = {
         label: string;
+        weight: number;
         color: string;
+    };
+    type WeightBarChartItem = WeighCharttItem & {
         addBorder?: boolean;
         subItems?: WeightBarChartSubItem[];
+    };
+    type WeightTreeMapItem<T> = SquarifyInput<WeighCharttItem> & {
+        data?: T;
     };
 
     type BrandData = { name: string; originalName?: string };
