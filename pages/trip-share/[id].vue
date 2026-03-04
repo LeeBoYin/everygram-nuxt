@@ -129,6 +129,8 @@ definePageMeta({
     layout: 'public-page',
 });
 
+const region = useRuntimeConfig().public.FIREBASE_FUNCTION_REGION;
+
 // ! the values below are non-reactive //
 const app = getApp();
 const db = getFirestore(app);
@@ -251,7 +253,7 @@ function incrementTripShareViewIfFirstVisit(tripId: string) {
     // increment view count only if this is the first visit
     try {
         // Specify the region to match the deployed function
-        const functions = getFunctions(app, 'asia-northeast1');
+        const functions = getFunctions(app, region);
         const incrementView = httpsCallable(
             functions,
             'incrementTripShareView',

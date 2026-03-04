@@ -122,6 +122,7 @@ definePageMeta({
     layout: 'sub-page',
 });
 
+const region = useRuntimeConfig().public.FIREBASE_FUNCTION_REGION;
 const { convertLighterpackGears } = useConvertLighterpackGears();
 const { hasLastVisited } = useNavigation();
 const i18n = useI18n();
@@ -156,7 +157,7 @@ const vuelidate = useVuelidate(formRules, formState, { $autoDirty: true });
 
 const getLighterPackPackData = async (listId: string): Promise<any[][]> => {
     const { getFunctions, httpsCallable } = await import('firebase/functions');
-    const functions = getFunctions(undefined, 'asia-northeast1');
+    const functions = getFunctions(undefined, region);
     const callable = httpsCallable(functions, 'getLighterPackPackData');
     const result = await callable({ listId });
 

@@ -5,8 +5,8 @@ import { onSchedule } from 'firebase-functions/v2/scheduler';
 export const findCustomBrands = onSchedule(
     {
         schedule: '0 0 1 * *', // run at 00:00 on the 1st of each month
-        timeZone: 'Asia/Taipei',
-        region: 'asia-northeast1',
+        timeZone: process.env.MY_FIREBASE_FUNCTION_TIMEZONE,
+        region: process.env.MY_FIREBASE_FUNCTION_REGION,
     },
     async (event) => {
         const db = admin.firestore();

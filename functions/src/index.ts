@@ -1,12 +1,16 @@
 import * as admin from 'firebase-admin';
 import { setGlobalOptions } from 'firebase-functions/v2';
 import serviceAccount from './everygram-firebase-adminsdk.json';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 // Set the maximum instances to 10 for all functions
 // To fix Error: Error generating the service identity for eventarc.googleapis.com.
 setGlobalOptions({
     maxInstances: 10,
-    region: 'asia-northeast1',
+    region: process.env.MY_FIREBASE_FUNCTION_REGION,
     timeoutSeconds: 60,
 });
 

@@ -4,7 +4,7 @@ import { load as cheerioLoad } from 'cheerio';
 import Papa from 'papaparse';
 
 export const getLighterPackPackData = functions.https.onCall(
-    { region: 'asia-northeast1' },
+    { region: process.env.MY_FIREBASE_FUNCTION_REGION },
     async (request: functions.https.CallableRequest<any>, context) => {
         const listId = request.data?.listId;
         if (!listId || typeof listId !== 'string') {

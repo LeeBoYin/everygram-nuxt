@@ -63,6 +63,7 @@
 import useVuelidate from '@vuelidate/core';
 import type { UserProfile } from 'firebase/auth';
 
+const region = useRuntimeConfig().public.FIREBASE_FUNCTION_REGION;
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 const { uploadFile } = useStorage();
@@ -146,7 +147,7 @@ async function onSubmit() {
             const { getFunctions, httpsCallable } = await import(
                 'firebase/functions'
             );
-            const functions = getFunctions(undefined, 'asia-northeast1');
+            const functions = getFunctions(undefined, region);
             const onUserProfileUpdated = httpsCallable(
                 functions,
                 'onUserProfileUpdated',

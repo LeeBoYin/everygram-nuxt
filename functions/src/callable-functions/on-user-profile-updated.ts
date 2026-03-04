@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 
 // Callable function when user profile is updated
 export const onUserProfileUpdated = functions.https.onCall(
-    { region: 'asia-northeast1' },
+    { region: process.env.MY_FIREBASE_FUNCTION_REGION },
     async (request: functions.https.CallableRequest<any>, context) => {
         const { userId, displayName, photoURL } = request.data || {};
         if (!userId || typeof userId !== 'string') {

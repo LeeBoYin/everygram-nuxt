@@ -14,6 +14,8 @@ export default defineNuxtConfig({
             FIREBASE_APP_ID: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
             FIREBASE_MEASUREMENT_ID:
                 process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+            FIREBASE_FUNCTION_REGION:
+                process.env.NUXT_PUBLIC_FIREBASE_FUNCTION_REGION,
             RECAPTCHA_SITE_KEY: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY,
         },
     },
