@@ -4,7 +4,7 @@
         severity="secondary"
         rounded
         outlined
-        :label="type === 'text' ? $t('ACTION_IMPORT_GEARS') : ''"
+        :label="type === 'text' ? $t('ACTION_IMPORT_EXPORT_GEARS') : ''"
         icon="pi pi-file-arrow-up"
         aria-haspopup="true"
         :aria-controls="isLargeScreen ? menuId : undefined"
@@ -20,6 +20,10 @@
         :is-open="isOpenImportGearsDialog"
         @close="isOpenImportGearsDialog = false"
     />
+    <ExportGearsDialog
+        :is-open="isOpenExportGearsDialog"
+        @close="isOpenExportGearsDialog = false"
+    />
 </template>
 
 <script lang="ts" setup>
@@ -28,6 +32,7 @@ defineProps<{
 }>();
 
 const isOpenImportGearsDialog = ref<boolean>(false);
+const isOpenExportGearsDialog = ref<boolean>(false);
 const { isLargeScreen } = useDeviceMeta();
 const i18n = useI18n();
 const router = useRouter();
@@ -44,6 +49,12 @@ const menuItems = computed(() => {
             label: i18n.t('ACTION_IMPORT_FROM_CSV_FILE'),
             command: () => {
                 isOpenImportGearsDialog.value = true;
+            },
+        },
+        {
+            label: i18n.t('ACTION_EXPORT_TO_CSV_FILE'),
+            command: () => {
+                isOpenExportGearsDialog.value = true;
             },
         },
     ];

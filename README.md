@@ -92,7 +92,6 @@ To safely develop new features and avoid breaking production, you should set up 
     ```env
     NUXT_PUBLIC_FIREBASE_API_KEY=your-api-key
     NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-    NUXT_PUBLIC_FIREBASE_DATABASE_URL=https://your-project.firebaseio.com
     NUXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
     NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
     NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
@@ -118,6 +117,12 @@ To safely develop new features and avoid breaking production, you should set up 
     ```bash
     npm install -g firebase-tools
     firebase login
+    ```
+
+    Select your Firebase project (replace with your actual Project ID).
+
+    ```bash
+    firebase use your-project-id
     ```
 
     Publish rules for Firestore and Storage.

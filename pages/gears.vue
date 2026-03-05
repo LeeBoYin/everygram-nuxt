@@ -53,8 +53,8 @@
                                     icon="pi pi-box"
                                 />
                             </NuxtLink>
-                            <!-- import gears -->
-                            <ImportGearsButton
+                            <!-- import/export gears -->
+                            <ImportExportGearsButton
                                 :type="isLargeScreen ? 'text' : 'icon'"
                             />
                             <!-- create gear -->
