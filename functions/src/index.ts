@@ -27,6 +27,7 @@ export { onTripShareUpdated } from './event-handlers/on-trip-share-updated';
 export { incrementTripShareView } from './callable-functions/increment-tripshare-view';
 export { onUserProfileUpdated } from './callable-functions/on-user-profile-updated';
 export { getLighterPackPackData } from './callable-functions/get-lighter-pack-data';
+export { convertLighterpackGears } from './callable-functions/convert-lighterpack-gears';
 
 // cron jobs
 export { findCustomBrands } from './cron-jobs/find-custom-brands';

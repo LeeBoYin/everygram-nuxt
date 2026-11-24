@@ -111,7 +111,21 @@ To safely develop new features and avoid breaking production, you should set up 
 
     You can generate this file from your Firebase project settings under "Service accounts".
 
-6. **Deploy Rules and Functions to Firebase**
+6. **Set the Anthropic API Key (Lighterpack import)**
+
+    The Lighterpack import uses Claude (via the `convertLighterpackGears` Cloud Function) to map gears to brands and categories. The key lives in Firebase Secret Manager, never in the frontend.
+
+    ```bash
+    firebase functions:secrets:set ANTHROPIC_API_KEY
+    ```
+
+    The command prompts for the value, so paste the key there. For the local emulator, create `functions/.secret.local` (already git-ignored):
+
+    ```
+    ANTHROPIC_API_KEY=your-anthropic-api-key
+    ```
+
+7. **Deploy Rules and Functions to Firebase**
 
     Sign in to your Firebase account:
 
@@ -132,7 +146,7 @@ To safely develop new features and avoid breaking production, you should set up 
     npm run deploy-functions
     ```
 
-7. **Launch the Nuxt Development Server**
+8. **Launch the Nuxt Development Server**
 
     ```bash
     npm run dev

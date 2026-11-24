@@ -11,3 +11,9 @@ typings/
 # Node.js dependency directory
 node_modules/
 *.local
+
+# Synced from ../utils/constants (see scripts/sync-shared-constants.mjs)
+src/shared/
+
+# Emulator secrets
+.secret.local
