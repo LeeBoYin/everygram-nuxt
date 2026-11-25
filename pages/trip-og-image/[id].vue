@@ -59,7 +59,7 @@ const consumablesInTrip: Consumable[] = _values(tripShare?.consumables || []);
 const i18n = useI18n();
 if (tripShare.locale && constants.LOCALES.includes(tripShare.locale)) {
     await i18n.loadLocaleMessages(tripShare.locale);
-    i18n.setLocale(tripShare.locale);
+    await i18n.setLocale(tripShare.locale);
 }
 
 useSeoMeta({

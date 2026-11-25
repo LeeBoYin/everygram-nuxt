@@ -143,9 +143,8 @@ async function onSubmit() {
 
         // Also update tripShare owner info in Firestore via callable function
         try {
-            const { getFunctions, httpsCallable } = await import(
-                'firebase/functions'
-            );
+            const { getFunctions, httpsCallable } =
+                await import('firebase/functions');
             const functions = getFunctions(undefined, 'asia-northeast1');
             const onUserProfileUpdated = httpsCallable(
                 functions,

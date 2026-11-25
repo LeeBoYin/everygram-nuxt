@@ -45,13 +45,7 @@ declare global {
         custom?: string;
     };
     type GearArchiveReason =
-        | 'unused'
-        | 'sold'
-        | 'given'
-        | 'trashed'
-        | 'lost'
-        | 'broken'
-        | 'other';
+        'unused' | 'sold' | 'given' | 'trashed' | 'lost' | 'broken' | 'other';
 
     type GearAction =
         | 'edit'

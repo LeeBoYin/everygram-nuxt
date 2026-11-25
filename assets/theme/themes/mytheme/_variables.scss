@@ -51,9 +51,9 @@ $colors: (
 @import './variables/_misc';
 
 :root {
-    --font-family: 'Lato', 'SF Pro', 'SF Pro Display', 'Helvetica Neue',
-        'Helvetica', 'PingFang TC', 'Noto Sans TC', 'Arial', 'Microsoft YaHei',
-        sans-serif;
+    --font-family:
+        'Lato', 'SF Pro', 'SF Pro Display', 'Helvetica Neue', 'Helvetica',
+        'PingFang TC', 'Noto Sans TC', 'Arial', 'Microsoft YaHei', sans-serif;
     --text-color: #{$eg-c-text};
     --text-color-light: #{$eg-c-text-light};
     --text-color-lighter: #{$eg-c-text-lighter};

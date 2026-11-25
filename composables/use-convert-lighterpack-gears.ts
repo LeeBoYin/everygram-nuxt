@@ -135,9 +135,8 @@ export const useConvertLighterpackGears = () => {
 
         // 3. call the cloud function to map brand and category
         try {
-            const { getFunctions, httpsCallable } = await import(
-                'firebase/functions'
-            );
+            const { getFunctions, httpsCallable } =
+                await import('firebase/functions');
             const functions = getFunctions(firebaseApp, 'asia-northeast1');
             const callable = httpsCallable<
                 { rows: (string | number)[][] },

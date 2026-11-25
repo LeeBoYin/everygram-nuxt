@@ -114,24 +114,25 @@ export default defineNuxtConfig({
         upperAfterPrefix: false,
     },
     i18n: {
+        // resolved relative to the `i18n/` directory
         langDir: 'locales',
         locales: [
             {
                 code: 'en',
                 name: 'English',
-                iso: 'en-US',
+                language: 'en-US',
                 file: 'en.json',
             },
             {
                 code: 'zh-tw',
                 name: '繁體中文',
-                iso: 'zh-TW',
+                language: 'zh-TW',
                 file: 'zh-tw.json',
             },
             {
                 code: 'ja',
                 name: '日本語',
-                iso: 'ja-JP',
+                language: 'ja-JP',
                 file: 'ja.json',
             },
         ],
