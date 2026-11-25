@@ -1,14 +1,17 @@
-import * as functions from 'firebase-functions';
-import fetch from 'node-fetch';
+import {
+    CallableRequest,
+    HttpsError,
+    onCall,
+} from 'firebase-functions/v2/https';
 import { load as cheerioLoad } from 'cheerio';
 import Papa from 'papaparse';
 
-export const getLighterPackPackData = functions.https.onCall(
+export const getLighterPackPackData = onCall(
     { region: 'asia-northeast1' },
-    async (request: functions.https.CallableRequest<any>, context) => {
+    async (request: CallableRequest<any>) => {
         const listId = request.data?.listId;
         if (!listId || typeof listId !== 'string') {
-            throw new functions.https.HttpsError(
+            throw new HttpsError(
                 'invalid-argument',
                 'Missing or invalid listId',
             );
@@ -72,7 +75,7 @@ export const getLighterPackPackData = functions.https.onCall(
 
             return { lighterpackGears: result };
         } catch (err: any) {
-            throw new functions.https.HttpsError(
+            throw new HttpsError(
                 'internal',
                 err.message || 'Failed to fetch pack data',
             );

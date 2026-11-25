@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import { ServiceAccount, cert, initializeApp } from 'firebase-admin/app';
 import { setGlobalOptions } from 'firebase-functions/v2';
 import serviceAccount from './everygram-firebase-adminsdk.json';
 
@@ -11,8 +11,8 @@ setGlobalOptions({
 });
 
 // set credential for admin SDK
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+initializeApp({
+    credential: cert(serviceAccount as ServiceAccount),
     storageBucket: 'everygram.appspot.com',
 });
 
