@@ -62,6 +62,7 @@
 </template>
 
 <script setup lang="ts">
+import { useToast } from 'primevue/usetoast';
 import { useI18n } from 'vue-i18n';
 import useArchiveGear from '~/composables/use-archive-gear';
 import useVuelidate from '@vuelidate/core';

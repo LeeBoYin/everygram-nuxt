@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { uniqueId as _uniqueId } from 'lodash-es';
 import type { MenuItem } from 'primevue/menuitem';
 
 const props = defineProps<{

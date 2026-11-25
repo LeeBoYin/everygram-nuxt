@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { values as _values } from 'lodash-es';
 import { getApp } from 'firebase/app';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 

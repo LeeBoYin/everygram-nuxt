@@ -1,3 +1,4 @@
+import { snakeCase as _snakeCase } from 'lodash-es';
 import * as vuelidateValidators from '@vuelidate/validators';
 import { createI18nMessage } from '@vuelidate/validators';
 

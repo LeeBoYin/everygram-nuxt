@@ -95,6 +95,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useToast } from 'primevue/usetoast';
 const props = defineProps<{
     title: string;
     isLoading: boolean;

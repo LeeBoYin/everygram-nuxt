@@ -107,11 +107,9 @@ export default defineNuxtConfig({
         '/trip/**': { ssr: false },
         '/import-gears-from-lighterpack': { ssr: false },
     },
-    modules: ['@pinia/nuxt', 'nuxt-lodash', '@nuxtjs/i18n', 'nuxt-primevue'],
-    lodash: {
-        // https://nuxt.com/modules/lodash#config
-        prefix: '_',
-        upperAfterPrefix: false,
+    modules: ['@pinia/nuxt', '@nuxtjs/i18n'],
+    build: {
+        transpile: ['primevue'],
     },
     i18n: {
         // resolved relative to the `i18n/` directory
@@ -136,7 +134,6 @@ export default defineNuxtConfig({
                 file: 'ja.json',
             },
         ],
-        lazy: true,
         defaultLocale: 'en',
         strategy: 'no_prefix',
         detectBrowserLanguage: {
@@ -145,11 +142,6 @@ export default defineNuxtConfig({
         },
         experimental: {
             localeDetector: './localeDetector.ts',
-        },
-    },
-    primevue: {
-        components: {
-            prefix: 'Prime',
         },
     },
     experimental: {

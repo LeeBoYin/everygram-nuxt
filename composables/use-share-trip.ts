@@ -1,3 +1,4 @@
+import { useToast } from 'primevue/usetoast';
 export default function () {
     const userTripsStore = useUserTripsStore();
     const toast = useToast();

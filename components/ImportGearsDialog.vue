@@ -160,6 +160,11 @@
 </template>
 
 <script setup lang="ts">
+import {
+    range as _range,
+    round as _round,
+    toNumber as _toNumber,
+} from 'lodash-es';
 type ImportGear = Pick<
     Gear,
     | 'name'

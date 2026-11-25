@@ -78,6 +78,7 @@
 </template>
 
 <script setup lang="ts">
+import { round as _round } from 'lodash-es';
 const props = defineProps<{
     items: WeightBarChartItem[];
     showLabel?: boolean;
