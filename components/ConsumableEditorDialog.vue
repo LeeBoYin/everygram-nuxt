@@ -128,8 +128,6 @@
 
 <script setup lang="ts">
 import useVuelidate from '@vuelidate/core';
-// @ts-ignore
-import { v4 as uuid } from 'uuid';
 
 const props = defineProps<{
     tripId: string;
@@ -214,7 +212,7 @@ const onSubmit = async () => {
     }
 
     const consumableData: Consumable = {
-        id: editingConsumable.value?.id || uuid(),
+        id: editingConsumable.value?.id || crypto.randomUUID(),
         name: formState.name,
         weight: formState.weight || 0,
         category: formState.category || 'others',

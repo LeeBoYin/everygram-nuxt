@@ -4,8 +4,6 @@ import {
     uploadBytes,
     getDownloadURL,
 } from 'firebase/storage';
-// @ts-ignore
-import { v4 as uuid } from 'uuid';
 
 export default function () {
     const storage = getStorage();
@@ -21,7 +19,7 @@ export default function () {
         fileName?: string;
     }) => {
         try {
-            const _fileName = fileName || uuid();
+            const _fileName = fileName || crypto.randomUUID();
             isUploading.value = true;
             const fileRef = storageRef(storage, `${path}/${_fileName}`);
             const snapshot = await uploadBytes(fileRef, file);
