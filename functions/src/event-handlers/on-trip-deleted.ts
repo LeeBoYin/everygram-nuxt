@@ -1,3 +1,4 @@
+import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { onDocumentDeleted } from 'firebase-functions/v2/firestore';
 import { unpublishTrip } from '../utils/trip-publish-unpublish';
@@ -18,6 +19,16 @@ export const onTripDeleted = onDocumentDeleted(
         // 2. unpublish trip share when trip is deleted
         const unpublishTripPromise = unpublishTrip(tripId);
 
-        return Promise.all([deleteStoragePromise, unpublishTripPromise]);
+        // 3. delete trip meta (view count, OG image url)
+        const deleteTripMetaPromise = getFirestore()
+            .collection('tripMeta')
+            .doc(tripId)
+            .delete();
+
+        return Promise.all([
+            deleteStoragePromise,
+            unpublishTripPromise,
+            deleteTripMetaPromise,
+        ]);
     },
 );

@@ -19,10 +19,17 @@ export const incrementTripShareView = onCall(
 
         try {
             const db = getFirestore();
-            await db
-                .collection('tripMeta')
-                .doc(tripId)
-                .set(
+            await db.runTransaction(async (transaction) => {
+                // only shared trips have views, otherwise any ID (or a deleted
+                // trip) would leave an orphan tripMeta document
+                const tripShare = await transaction.get(
+                    db.collection('tripShare').doc(tripId),
+                );
+                if (!tripShare.exists) {
+                    throw new HttpsError('not-found', 'Trip not found');
+                }
+                transaction.set(
+                    db.collection('tripMeta').doc(tripId),
                     {
                         tripId,
                         viewCount: FieldValue.increment(1),
@@ -31,12 +38,14 @@ export const incrementTripShareView = onCall(
                         merge: true, // Use merge to avoid overwriting other fields
                     },
                 );
+            });
 
             return { success: true };
         } catch (error: any) {
+            if (error instanceof HttpsError) throw error;
             throw new HttpsError(
-                'not-found',
-                'Trip not found or update failed',
+                'internal',
+                'Failed to update view count',
                 error.message,
             );
         }
