@@ -29,5 +29,8 @@ export { onUserProfileUpdated } from './callable-functions/on-user-profile-updat
 export { getLighterPackPackData } from './callable-functions/get-lighter-pack-data';
 export { convertLighterpackGears } from './callable-functions/convert-lighterpack-gears';
 
+// admin dashboard
+export { setAdminRole } from './admin/set-admin-role';
+
 // cron jobs
 export { findCustomBrands } from './cron-jobs/find-custom-brands';

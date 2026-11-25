@@ -22,6 +22,19 @@ declare global {
         lastUpdated: Timestamp;
     };
 
+    // custom claim: request.auth.token.adminRole
+    type AdminRole = 'owner' | 'admin';
+
+    // adminUsers/{uid}：claims 的鏡像，只由 admin SDK 寫入
+    type AdminUser = {
+        uid: string;
+        email: string;
+        displayName: string;
+        role: AdminRole;
+        addedBy: string; // uid，第一位 owner 由 script 建立時填 'bootstrap'
+        added: Timestamp;
+    };
+
     type Locale = 'en' | 'zh-tw' | 'ja';
 
     type CategoryData = { icon: string; color: string };

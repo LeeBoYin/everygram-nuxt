@@ -115,6 +115,7 @@ export default defineNuxtConfig({
         '/trips': { ssr: false },
         '/trip/**': { ssr: false },
         '/import-gears-from-lighterpack': { ssr: false },
+        '/admin/**': { ssr: false },
     },
     modules: ['@pinia/nuxt', '@nuxtjs/i18n'],
     build: {

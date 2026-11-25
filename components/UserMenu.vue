@@ -33,8 +33,19 @@ const onSignOut = async () => {
 const menu = ref();
 const isOpenLocaleMenu = ref(false);
 const { openUserSettingsDialog } = useUserSettingsDialog();
+const { isAdmin } = useAdminRole();
 
 const items = computed(() => [
+    // the admin dashboard is zh-TW only, so is its entry
+    ...(isAdmin.value
+        ? [
+              {
+                  label: '管理後台',
+                  icon: 'pi pi-shield',
+                  command: () => navigateTo('/admin'),
+              },
+          ]
+        : []),
     {
         label: i18n.t('ACTION_USER_SETTINGS'),
         icon: 'pi pi-user-edit',
