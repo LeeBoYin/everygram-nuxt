@@ -23,7 +23,8 @@
         "lint-staged": "^17.6.2",
         "nuxt": "~4.5.2",
         "prettier": "3.10.1",
-        "sass": "^1.108.2"
+        "sass": "^1.108.2",
+        "unplugin": "^3.7.0"
     },
     "dependencies": {
         "@vuelidate/core": "^2.0.3",
