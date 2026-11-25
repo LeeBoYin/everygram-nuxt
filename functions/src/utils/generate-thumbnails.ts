@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import { getStorage } from 'firebase-admin/storage';
 
 import type {
     ThumbnailSize,
@@ -32,7 +32,7 @@ export const generateThumbnails = async ({
     targetPath: string;
     sizes: ThumbnailOption[];
 }): Promise<Partial<Record<ThumbnailSize, StorageFile>> | undefined> => {
-    const bucket = admin.storage().bucket();
+    const bucket = getStorage().bucket();
     const fileName = path.basename(imagePath);
     const tempFilePath = path.join(os.tmpdir(), fileName);
 

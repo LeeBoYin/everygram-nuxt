@@ -1,4 +1,5 @@
-import * as admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { publishTrip, unpublishTrip } from '../utils/trip-publish-unpublish';
 import {
@@ -41,7 +42,7 @@ export const onTripUpdated = onDocumentUpdated(
             if (oldBannerImageFileName) {
                 const oldBannerImagePath = `trip/${tripId}/${oldBannerImageFileName}`;
                 subPromises.push(
-                    admin.storage().bucket().deleteFiles({
+                    getStorage().bucket().deleteFiles({
                         prefix: oldBannerImagePath,
                     }),
                 );
@@ -62,8 +63,7 @@ export const onTripUpdated = onDocumentUpdated(
                         }
 
                         // 2.2.2. update trip with thumbnails
-                        await admin
-                            .firestore()
+                        await getFirestore()
                             .collection('trip')
                             .doc(tripId)
                             .update({

@@ -1,9 +1,56 @@
-import * as admin from 'firebase-admin';
-import chromium from 'chrome-aws-lambda';
-import puppeteer from 'puppeteer-core';
+import { getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
+import os from 'os';
+import path from 'path';
 
 const OG_IMAGE_WIDTH = 1200;
 const OG_IMAGE_HEIGHT = 630;
+const VIEWPORT = { width: 1920, height: 1080 };
+// The Cloud Functions base image has no CJK fonts. This family is already in the
+// app's font stack, so loading it as a web font is enough.
+const CJK_FONT_CSS_URL =
+    'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap';
+
+// puppeteer-core and @sparticuz/chromium are ESM only, and are imported lazily
+// so that other functions do not load them on cold start.
+const launchBrowser = async () => {
+    const { default: puppeteer } = await import('puppeteer-core');
+
+    // Emulator: the bundled Chromium is Linux x64 only, so use the local Chrome.
+    if (process.env.FUNCTIONS_EMULATOR === 'true') {
+        const executablePath = process.env.CHROME_EXECUTABLE_PATH;
+        return puppeteer.launch({
+            ...(executablePath ? { executablePath } : { channel: 'chrome' }),
+            defaultViewport: VIEWPORT,
+            headless: true,
+        });
+    }
+
+    const {
+        default: chromium,
+        inflate,
+        setupLambdaEnvironment,
+    } = await import('@sparticuz/chromium');
+    const executablePath = await chromium.executablePath();
+    // The package only unpacks its shared libraries (libnss3, libnspr4, ...)
+    // on AWS Lambda. The Cloud Functions base image does not have them either.
+    const binPath = path.join(
+        path.dirname(require.resolve('@sparticuz/chromium')),
+        '../bin',
+    );
+    await inflate(path.join(binPath, 'al2023.tar.br'));
+    setupLambdaEnvironment(path.join(os.tmpdir(), 'al2023', 'lib'));
+
+    return puppeteer.launch({
+        args: await puppeteer.defaultArgs({
+            args: chromium.args,
+            headless: 'shell',
+        }),
+        defaultViewport: VIEWPORT,
+        executablePath,
+        headless: 'shell',
+    });
+};
 
 /**
  * Generates a trip OG image, uploads it to storage, and updates tripMeta.ogImageUrl.
@@ -18,20 +65,19 @@ export const generateTripOgImageAndUpdateMeta = async (
     }
 
     // 1. Launch Puppeteer
-    const executablePath = await chromium.executablePath;
-    const browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath,
-        headless: chromium.headless,
-    });
+    const browser = await launchBrowser();
     const page = await browser.newPage();
     await page.goto(`https://everygram.app/trip-og-image/${tripId}`, {
         waitUntil: 'domcontentloaded',
         timeout: 60000, // Increased timeout to 60 seconds
     });
+    try {
+        await page.addStyleTag({ url: CJK_FONT_CSS_URL });
+    } catch (err) {
+        console.warn('Failed to load CJK web font', err);
+    }
     // Add delay to ensure all assets are loaded/rendered
-    await page.waitForTimeout(5000);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     // 2. Save screenshot to temp file
     const tempFilePath = `/tmp/og-image-${tripId}.jpeg`;
@@ -44,7 +90,7 @@ export const generateTripOgImageAndUpdateMeta = async (
     await browser.close();
 
     // 3. Upload to Firebase Storage
-    const bucket = admin.storage().bucket();
+    const bucket = getStorage().bucket();
     const ogImagePath = `trip/${tripId}/og-image`;
     const file = bucket.file(`${ogImagePath}/og-image.jpeg`);
     await bucket.upload(tempFilePath, {
@@ -59,8 +105,7 @@ export const generateTripOgImageAndUpdateMeta = async (
     });
 
     // 5. Update tripMeta.ogImageUrl
-    await admin
-        .firestore()
+    await getFirestore()
         .collection('tripMeta')
         .doc(tripId)
         .set({ tripId, ogImageUrl: url }, { merge: true });

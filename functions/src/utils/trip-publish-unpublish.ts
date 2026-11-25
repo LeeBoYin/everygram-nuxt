@@ -1,6 +1,6 @@
 import * as logger from 'firebase-functions/logger';
-import * as admin from 'firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
+import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import type {
     Gear,
     GearWithQuantity,
@@ -11,7 +11,7 @@ import _ from 'lodash';
 
 export const publishTrip = async (tripId: string) => {
     // get trip data from firestore
-    const tripDocRef = admin.firestore().collection('trip').doc(tripId);
+    const tripDocRef = getFirestore().collection('trip').doc(tripId);
     const tripDoc = await tripDocRef.get();
     if (!tripDoc.exists) {
         logger.error('Trip does not exist.');
@@ -29,15 +29,14 @@ export const publishTrip = async (tripId: string) => {
     }
 
     // get owner user data
-    const owner = await admin.auth().getUser(ownerUid);
+    const owner = await getAuth().getUser(ownerUid);
     if (!owner) {
         logger.error('Owner not found.');
         return;
     }
 
     // get owner's user gears
-    const ownerGearsSnapshot = await admin
-        .firestore()
+    const ownerGearsSnapshot = await getFirestore()
         .collection('userGears')
         .doc(ownerUid)
         .get();
@@ -118,8 +117,7 @@ export const publishTrip = async (tripId: string) => {
     };
 
     // get owner's locale from userMeta
-    const userMetaDoc = await admin
-        .firestore()
+    const userMetaDoc = await getFirestore()
         .collection('userMeta')
         .doc(ownerUid)
         .get();
@@ -129,7 +127,7 @@ export const publishTrip = async (tripId: string) => {
     }
 
     // write trip share data to firestore in tripShare collection
-    const tripShareCollectionRef = admin.firestore().collection('tripShare');
+    const tripShareCollectionRef = getFirestore().collection('tripShare');
     const tripShareDocRef = tripShareCollectionRef.doc(tripId);
     await tripShareDocRef.set({
         ...tripShare,
@@ -139,7 +137,7 @@ export const publishTrip = async (tripId: string) => {
 
 export const unpublishTrip = async (tripId: string) => {
     // delete trip share data from firestore
-    const tripShareCollectionRef = admin.firestore().collection('tripShare');
+    const tripShareCollectionRef = getFirestore().collection('tripShare');
     const tripShareDocRef = tripShareCollectionRef.doc(tripId);
     await tripShareDocRef.delete();
 };

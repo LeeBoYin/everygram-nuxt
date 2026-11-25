@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 
 // Scheduled function to collect custom brand statistics from gear collection
@@ -9,7 +9,7 @@ export const findCustomBrands = onSchedule(
         region: 'asia-northeast1',
     },
     async (event) => {
-        const db = admin.firestore();
+        const db = getFirestore();
         // Use where clause to only get gears with brand.custom
         const gearSnapshot = await db
             .collection('gear')
@@ -44,7 +44,7 @@ export const findCustomBrands = onSchedule(
             .map(([brand, count]) => `${brand}: ${count}`);
 
         await db.collection('customBrands').add({
-            created: admin.firestore.FieldValue.serverTimestamp(),
+            created: FieldValue.serverTimestamp(),
             brands: brandsArray,
             gearCount: Object.values(brandCounts).reduce(
                 (sum, count) => sum + count,

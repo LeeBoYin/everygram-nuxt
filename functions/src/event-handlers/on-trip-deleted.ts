@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import { getStorage } from 'firebase-admin/storage';
 import { onDocumentDeleted } from 'firebase-functions/v2/firestore';
 import { unpublishTrip } from '../utils/trip-publish-unpublish';
 
@@ -10,7 +10,7 @@ export const onTripDeleted = onDocumentDeleted(
         // 1. delete the storage path trip/{tripId}
         const deleteStoragePromise = (async () => {
             const filePath = `trip/${tripId}`;
-            await admin.storage().bucket().deleteFiles({
+            await getStorage().bucket().deleteFiles({
                 prefix: filePath,
             });
         })();

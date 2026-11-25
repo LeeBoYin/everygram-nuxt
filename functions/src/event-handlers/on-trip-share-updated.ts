@@ -4,7 +4,10 @@ import { generateTripOgImageAndUpdateMeta } from '../callable-functions/generate
 export const onTripShareUpdated = onDocumentUpdated(
     {
         document: 'tripShare/{tripId}',
-        memory: '1GiB',
+        // Chromium: 2GiB leaves room for the browser and its files in /tmp
+        // (in memory), and one event per instance avoids parallel browsers.
+        memory: '2GiB',
+        concurrency: 1,
         timeoutSeconds: 60,
     },
     async (event) => {

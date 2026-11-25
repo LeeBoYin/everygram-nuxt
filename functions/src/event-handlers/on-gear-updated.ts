@@ -1,4 +1,5 @@
-import * as admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import _ from 'lodash';
 import { publishTrip } from '../utils/trip-publish-unpublish';
@@ -20,14 +21,12 @@ export const onGearUpdated = onDocumentUpdated(
             const [tripSharesWithGearSnapshot, tripSharesWithWornGearSnapshot] =
                 await Promise.all([
                     // get trip shares that have the gear
-                    admin
-                        .firestore()
+                    getFirestore()
                         .collection('tripShare')
                         .where(`gears.${gearId}`, '!=', false)
                         .get(),
                     // get trip shares that have the worn gear
-                    admin
-                        .firestore()
+                    getFirestore()
                         .collection('tripShare')
                         .where(`wornGears.${gearId}`, '!=', false)
                         .get(),
@@ -64,7 +63,7 @@ export const onGearUpdated = onDocumentUpdated(
             if (oldPhotoFileName) {
                 const oldPhotoPath = `gear/${gearId}/${oldPhotoFileName}`;
                 subPromises.push(
-                    admin.storage().bucket().deleteFiles({
+                    getStorage().bucket().deleteFiles({
                         prefix: oldPhotoPath,
                     }),
                 );
@@ -85,16 +84,13 @@ export const onGearUpdated = onDocumentUpdated(
                         }
 
                         // 2.2.2. use transaction to update gear with thumbnails and userGears with thumbnails
-                        await admin
-                            .firestore()
-                            .runTransaction(async (transaction) => {
+                        await getFirestore().runTransaction(
+                            async (transaction) => {
                                 // Get references to the documents
-                                const gearDocRef = admin
-                                    .firestore()
+                                const gearDocRef = getFirestore()
                                     .collection('gear')
                                     .doc(gearId);
-                                const userGearsDocRef = admin
-                                    .firestore()
+                                const userGearsDocRef = getFirestore()
                                     .collection('userGears')
                                     .doc(Object.entries(newGear.role)[0][0]);
                                 // Read the documents
@@ -114,7 +110,8 @@ export const onGearUpdated = onDocumentUpdated(
                                     [`gears.${gearId}.photo.thumbnails`]:
                                         generatedThumbnails,
                                 });
-                            });
+                            },
+                        );
                     })(),
                 );
             }

@@ -1,5 +1,5 @@
-import * as admin from 'firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 import { onDocumentDeleted } from 'firebase-functions/v2/firestore';
 import type { Trip } from '../../types/types';
 import _ from 'lodash';
@@ -12,7 +12,7 @@ export const onGearDeleted = onDocumentDeleted(
         // 1. delete the storage path gear/{gearId}
         const deleteStoragePromise = (async () => {
             const filePath = `gear/${gearId}`;
-            await admin.storage().bucket().deleteFiles({
+            await getStorage().bucket().deleteFiles({
                 prefix: filePath,
             });
         })();
@@ -23,14 +23,12 @@ export const onGearDeleted = onDocumentDeleted(
             const [tripsWithGearSnapshot, tripsWithWornGearSnapshot] =
                 await Promise.all([
                     // get trips that have the gear
-                    admin
-                        .firestore()
+                    getFirestore()
                         .collection('trip')
                         .where(`gears.${gearId}`, '!=', false)
                         .get(),
                     // get trips that have the worn gear
-                    admin
-                        .firestore()
+                    getFirestore()
                         .collection('trip')
                         .where(`wornGears.${gearId}`, '!=', false)
                         .get(),
