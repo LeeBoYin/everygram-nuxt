@@ -11,5 +11,5 @@
         "resolveJsonModule": true
     },
     "compileOnSave": true,
-    "include": ["src"]
+    "include": ["src", "../types/types.d.ts"]
 }
