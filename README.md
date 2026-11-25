@@ -12,10 +12,10 @@ Hiking can be an exhilarating adventure, but carrying a heavy pack can quickly t
 
 ## Key Features
 
--   **Gear List Creation**: Easily create and organize lists for all your hiking trips. Add each piece of gear with its weight to keep a precise inventory.
--   **Weight Calculation**: Automatically calculate the total pack weight, base weight, and consumable weight. See how much each category contributes to your overall load.
--   **Weight Distribution Visualization**: Get a visual representation of your gear’s weight distribution. Quickly identify areas where you can cut down on weight.
--   **Optimized Packing**: Use the insights provided by Everygram to make smarter packing choices. Aim for a lighter pack without sacrificing essential gear.
+- **Gear List Creation**: Easily create and organize lists for all your hiking trips. Add each piece of gear with its weight to keep a precise inventory.
+- **Weight Calculation**: Automatically calculate the total pack weight, base weight, and consumable weight. See how much each category contributes to your overall load.
+- **Weight Distribution Visualization**: Get a visual representation of your gear’s weight distribution. Quickly identify areas where you can cut down on weight.
+- **Optimized Packing**: Use the insights provided by Everygram to make smarter packing choices. Aim for a lighter pack without sacrificing essential gear.
 
 ## How It Works
 
@@ -27,10 +27,10 @@ Hiking can be an exhilarating adventure, but carrying a heavy pack can quickly t
 
 ## Benefits
 
--   **Efficiency**: Save time and effort by organizing your gear list digitally.
--   **Precision**: Ensure every gram is accounted for, enhancing your hiking efficiency.
--   **Awareness**: Build a sense of lightweight packing and become more mindful of your gear choices.
--   **Preparation**: Be better prepared for your hiking trips with a well-managed pack.
+- **Efficiency**: Save time and effort by organizing your gear list digitally.
+- **Precision**: Ensure every gram is accounted for, enhancing your hiking efficiency.
+- **Awareness**: Build a sense of lightweight packing and become more mindful of your gear choices.
+- **Preparation**: Be better prepared for your hiking trips with a well-managed pack.
 
 ## Join the Everygram Community
 
@@ -46,11 +46,11 @@ Start your journey with Everygram today and experience the difference that metic
 
 ### Frontend
 
--   The frontend of Everygram is built using Nuxt + Vue.js
+- The frontend of Everygram is built using Nuxt + Vue.js
 
 ### Backend
 
--   The backend is using Firebase for authentication, Firestore data storage, and Cloud Functions for serverless logic.
+- The backend is using Firebase for authentication, Firestore data storage, and Cloud Functions for serverless logic.
 
 ## How to Run the Project in Your Local
 

@@ -38,7 +38,8 @@ defineProps<{
 @import '~/assets/theme/_eg-colors.scss';
 .doc-page-banner {
     background-color: $eg-c-brown-200;
-    background-image: url('/image/doc-page-banner-pattern.png'),
+    background-image:
+        url('/image/doc-page-banner-pattern.png'),
         url('/image/doc-page-banner-bg.png');
     background-position:
         top left,
