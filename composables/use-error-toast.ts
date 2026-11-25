@@ -1,3 +1,4 @@
+import { useToast } from 'primevue/usetoast';
 export default function useErrorToast() {
     const toast = useToast();
     const errorToast = (message: string, error?: any) => {

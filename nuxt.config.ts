@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    // Newer dates switch Nitro from the `netlify-legacy` preset to `netlify`
+    // (Netlify Functions 2.0). Kept at the previous default so deploys behave
+    // the same.
+    compatibilityDate: '2024-04-03',
     runtimeConfig: {
         public: {
             FIREBASE_API_KEY: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
@@ -107,11 +111,9 @@ export default defineNuxtConfig({
         '/trip/**': { ssr: false },
         '/import-gears-from-lighterpack': { ssr: false },
     },
-    modules: ['@pinia/nuxt', 'nuxt-lodash', '@nuxtjs/i18n', 'nuxt-primevue'],
-    lodash: {
-        // https://nuxt.com/modules/lodash#config
-        prefix: '_',
-        upperAfterPrefix: false,
+    modules: ['@pinia/nuxt', '@nuxtjs/i18n'],
+    build: {
+        transpile: ['primevue'],
     },
     i18n: {
         // resolved relative to the `i18n/` directory
@@ -136,7 +138,6 @@ export default defineNuxtConfig({
                 file: 'ja.json',
             },
         ],
-        lazy: true,
         defaultLocale: 'en',
         strategy: 'no_prefix',
         detectBrowserLanguage: {
@@ -145,11 +146,6 @@ export default defineNuxtConfig({
         },
         experimental: {
             localeDetector: './localeDetector.ts',
-        },
-    },
-    primevue: {
-        components: {
-            prefix: 'Prime',
         },
     },
     experimental: {

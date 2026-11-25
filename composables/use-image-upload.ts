@@ -1,3 +1,4 @@
+import { useToast } from 'primevue/usetoast';
 import Compressor from 'compressorjs';
 
 export default function (

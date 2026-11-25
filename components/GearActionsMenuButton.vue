@@ -56,6 +56,7 @@
 </template>
 
 <script lang="ts" setup>
+import { filter as _filter } from 'lodash-es';
 import type { MenuItem } from 'primevue/menuitem';
 
 const props = defineProps<{

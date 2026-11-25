@@ -57,6 +57,7 @@
 </template>
 
 <script setup lang="ts">
+import { mapValues as _mapValues, sumBy as _sumBy } from 'lodash-es';
 const props = defineProps<{
     gears: GearWithQuantity[];
     wornGears: GearWithQuantity[];

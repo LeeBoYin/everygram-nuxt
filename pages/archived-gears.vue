@@ -78,6 +78,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useToast } from 'primevue/usetoast';
 definePageMeta({
     middleware: ['auth-guard'],
     layout: 'sub-page',

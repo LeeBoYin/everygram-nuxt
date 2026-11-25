@@ -80,6 +80,7 @@
 </template>
 
 <script setup lang="ts">
+import { sortBy as _sortBy, sum as _sum } from 'lodash-es';
 import GearSelectDataTable from './GearSelectDataTable.vue';
 import { FilterMatchMode } from 'primevue/api';
 

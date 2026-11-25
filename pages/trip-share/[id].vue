@@ -121,6 +121,7 @@
 </template>
 
 <script setup lang="ts">
+import { sumBy as _sumBy, values as _values } from 'lodash-es';
 import { getApp } from 'firebase/app';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';

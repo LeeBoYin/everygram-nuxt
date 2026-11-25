@@ -1,3 +1,5 @@
+import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
 export default function () {
     const i18n = useI18n();
     const confirm = useConfirm();

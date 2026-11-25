@@ -236,6 +236,7 @@
 </template>
 
 <script setup lang="ts">
+import { intersection as _intersection } from 'lodash-es';
 import useVuelidate from '@vuelidate/core';
 
 const props = defineProps<{

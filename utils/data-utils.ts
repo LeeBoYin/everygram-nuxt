@@ -1,3 +1,12 @@
+import {
+    filter as _filter,
+    groupBy as _groupBy,
+    map as _map,
+    sum as _sum,
+    sumBy as _sumBy,
+    uniqueId as _uniqueId,
+    isNaN,
+} from 'lodash-es';
 const groupGearsByCategory = <T extends Gear>(
     gears: T[],
 ): Partial<Record<GearCategory, T[]>> =>

@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts" setup>
+import { uniqueId as _uniqueId } from 'lodash-es';
 defineProps<{
     type: 'text' | 'icon';
 }>();

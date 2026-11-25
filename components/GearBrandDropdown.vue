@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+import { uniq as _uniq } from 'lodash-es';
 const value = defineModel<string | undefined>({ required: true });
 const userGearsStore = useUserGearsStore();
 const { gears } = storeToRefs(userGearsStore);
