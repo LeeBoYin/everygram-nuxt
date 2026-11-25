@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    // Newer dates switch Nitro from the `netlify-legacy` preset to `netlify`
+    // (Netlify Functions 2.0). Kept at the previous default so deploys behave
+    // the same.
+    compatibilityDate: '2024-04-03',
     runtimeConfig: {
         public: {
             FIREBASE_API_KEY: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
