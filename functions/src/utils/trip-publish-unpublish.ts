@@ -8,6 +8,7 @@ import type {
     TripShare,
 } from '../../types/types';
 import _ from 'lodash';
+import { toTripShareGear } from './trip-share-gear';
 
 export const publishTrip = async (tripId: string) => {
     // get trip data from firestore
@@ -48,38 +49,24 @@ export const publishTrip = async (tripId: string) => {
     const gearMap = userGearsData.gears as Record<string, Gear>;
 
     // combine user's gears with trip's gears and worn gears = gears with quantity
-    const tripShareGears: Record<string, GearWithQuantity> = Object.entries(
-        trip.gears,
-    ).reduce(
-        (acc, [gearId, tripGear]) => {
-            if (!gearMap[gearId]) {
+    const toTripShareGears = (
+        tripGears: Trip['gears'],
+    ): Record<string, GearWithQuantity> =>
+        Object.entries(tripGears).reduce(
+            (acc, [gearId, tripGear]) => {
+                if (!gearMap[gearId]) {
+                    return acc;
+                }
+                acc[gearId] = toTripShareGear(
+                    gearMap[gearId],
+                    tripGear.quantity,
+                );
                 return acc;
-            }
-            acc[gearId] = {
-                ...gearMap[gearId],
-                quantity: tripGear.quantity,
-            };
-            // remove private note from gear
-            delete acc[gearId].privateNote;
-            return acc;
-        },
-        {} as Record<string, GearWithQuantity>,
-    );
-    const tripShareWornGears: Record<string, GearWithQuantity> = Object.entries(
-        trip.wornGears,
-    ).reduce(
-        (acc, [gearId, tripGear]) => {
-            if (!gearMap[gearId]) {
-                return acc;
-            }
-            acc[gearId] = {
-                ...gearMap[gearId],
-                quantity: tripGear.quantity,
-            };
-            return acc;
-        },
-        {} as Record<string, GearWithQuantity>,
-    );
+            },
+            {} as Record<string, GearWithQuantity>,
+        );
+    const tripShareGears = toTripShareGears(trip.gears);
+    const tripShareWornGears = toTripShareGears(trip.wornGears);
 
     // calculate weights
     const baseWeight = _.round(
