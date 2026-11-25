@@ -2,6 +2,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import os from 'os';
 import path from 'path';
+import { removeTripOgImage } from '../utils/remove-trip-og-image';
 
 const OG_IMAGE_WIDTH = 1200;
 const OG_IMAGE_HEIGHT = 630;
@@ -66,28 +67,45 @@ export const generateTripOgImageAndUpdateMeta = async (
 
     // 1. Launch Puppeteer
     const browser = await launchBrowser();
-    const page = await browser.newPage();
-    await page.goto(`https://everygram.app/trip-og-image/${tripId}`, {
-        waitUntil: 'domcontentloaded',
-        timeout: 60000, // Increased timeout to 60 seconds
-    });
-    try {
-        await page.addStyleTag({ url: CJK_FONT_CSS_URL });
-    } catch (err) {
-        console.warn('Failed to load CJK web font', err);
-    }
-    // Add delay to ensure all assets are loaded/rendered
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    // 2. Save screenshot to temp file
     const tempFilePath = `/tmp/og-image-${tripId}.jpeg`;
-    await page.screenshot({
-        path: tempFilePath as `${string}.jpeg`,
-        type: 'jpeg',
-        quality: 80,
-        clip: { x: 0, y: 0, width: OG_IMAGE_WIDTH, height: OG_IMAGE_HEIGHT },
-    });
-    await browser.close();
+    try {
+        const page = await browser.newPage();
+        const response = await page.goto(
+            `https://everygram.app/trip-og-image/${tripId}`,
+            {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000, // Increased timeout to 60 seconds
+            },
+        );
+        // never turn an error page into the OG image
+        if (!response?.ok()) {
+            throw new Error(
+                `OG image page responded with status ${response?.status()}`,
+            );
+        }
+        try {
+            await page.addStyleTag({ url: CJK_FONT_CSS_URL });
+        } catch (err) {
+            console.warn('Failed to load CJK web font', err);
+        }
+        // Add delay to ensure all assets are loaded/rendered
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+
+        // 2. Save screenshot to temp file
+        await page.screenshot({
+            path: tempFilePath as `${string}.jpeg`,
+            type: 'jpeg',
+            quality: 80,
+            clip: {
+                x: 0,
+                y: 0,
+                width: OG_IMAGE_WIDTH,
+                height: OG_IMAGE_HEIGHT,
+            },
+        });
+    } finally {
+        await browser.close();
+    }
 
     // 3. Upload to Firebase Storage
     const bucket = getStorage().bucket();
@@ -104,11 +122,25 @@ export const generateTripOgImageAndUpdateMeta = async (
         expires: '01-01-2500',
     });
 
-    // 5. Update tripMeta.ogImageUrl
-    await getFirestore()
-        .collection('tripMeta')
-        .doc(tripId)
-        .set({ tripId, ogImageUrl: url }, { merge: true });
+    // 5. Update tripMeta.ogImageUrl. The trip can be unpublished while the image
+    // is being generated, so check tripShare and write in one transaction.
+    const db = getFirestore();
+    const isStillShared = await db.runTransaction(async (transaction) => {
+        const tripShare = await transaction.get(
+            db.collection('tripShare').doc(tripId),
+        );
+        if (!tripShare.exists) return false;
+        transaction.set(
+            db.collection('tripMeta').doc(tripId),
+            { tripId, ogImageUrl: url },
+            { merge: true },
+        );
+        return true;
+    });
+    if (!isStillShared) {
+        await removeTripOgImage(tripId);
+        return;
+    }
 
     return url;
 };

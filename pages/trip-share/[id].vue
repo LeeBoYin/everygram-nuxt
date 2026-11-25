@@ -159,10 +159,15 @@ const wornGearsWeight = _sumBy(
     (gear) => (+gear.weight || 0) * gear.quantity,
 );
 
+if (import.meta.server && !tripShare) {
+    // keep the "trip not found" page, but tell crawlers it does not exist
+    setResponseStatus(useRequestEvent()!, 404);
+}
+
 // SEO and meta
 const { formatWeight } = useLangUtils();
 const i18n = useI18n();
-if (tripShare.locale && tripShare.locale !== i18n.locale.value) {
+if (tripShare?.locale && tripShare.locale !== i18n.locale.value) {
     // load trip locale for og title and description
     await i18n.loadLocaleMessages(tripShare.locale);
 }
@@ -226,6 +231,8 @@ useSeoMeta({
 });
 
 onMounted(() => {
+    if (!tripShare) return;
+
     analyticsUtils.log(constants.ANALYTICS_EVENTS.VIEW_TRIP_SHARE_PAGE, {
         trip_id: tripId,
     });
@@ -257,13 +264,17 @@ function incrementTripShareViewIfFirstVisit(tripId: string) {
             functions,
             'incrementTripShareView',
         );
-        incrementView({ tripId }).then(() => {
-            viewedIds.add(tripId);
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(Array.from(viewedIds)),
-            );
-        });
+        incrementView({ tripId })
+            .then(() => {
+                viewedIds.add(tripId);
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(Array.from(viewedIds)),
+                );
+            })
+            .catch(() => {
+                // ignore error, do not break page
+            });
     } catch {
         // ignore error, do not break page
     }

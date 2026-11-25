@@ -22,6 +22,11 @@ export default defineNuxtConfig({
         },
     },
     devtools: { enabled: true },
+    // Keep the dev watcher out of folders the app never builds from: git
+    // worktrees under `.claude/` (full project copies) and the separate Cloud
+    // Functions package with its own `node_modules`. Watching them exhausts
+    // file handles (`EMFILE: too many open files, watch`, `spawn EBADF`).
+    ignore: ['**/.claude/**', '/functions/**'],
     app: {
         head: {
             meta: [

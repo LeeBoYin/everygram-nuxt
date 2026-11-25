@@ -1,7 +1,8 @@
-import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
+import { onDocumentWritten } from 'firebase-functions/v2/firestore';
 import { generateTripOgImageAndUpdateMeta } from '../callable-functions/generate-trip-og-image';
+import { removeTripOgImage } from '../utils/remove-trip-og-image';
 
-export const onTripShareUpdated = onDocumentUpdated(
+export const onTripShareWritten = onDocumentWritten(
     {
         document: 'tripShare/{tripId}',
         // Chromium: 2GiB leaves room for the browser and its files in /tmp
@@ -14,9 +15,14 @@ export const onTripShareUpdated = onDocumentUpdated(
         const tripId = event.params.tripId;
         const newTripShare = event.data?.after.data();
         const oldTripShare = event.data?.before.data();
-        if (!newTripShare) return;
 
-        // 1. generate trip og image (only if relevant fields are updated)
+        // 1. trip is unpublished or deleted: its OG image must not stay readable
+        if (!newTripShare) {
+            await removeTripOgImage(tripId);
+            return;
+        }
+
+        // 2. generate trip og image (only if relevant fields are updated)
         const tripOgImageRelevantFields = [
             'title',
             'packWeight',
@@ -58,7 +64,7 @@ export const onTripShareUpdated = onDocumentUpdated(
                 await generateTripOgImageAndUpdateMeta(tripId);
             } catch (err) {
                 console.error(
-                    `[onTripShareUpdated] Failed to generate OG image for tripId=${tripId}:`,
+                    `[onTripShareWritten] Failed to generate OG image for tripId=${tripId}:`,
                     err,
                 );
             }
