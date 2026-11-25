@@ -1,4 +1,4 @@
-import { clamp as _clamp, round as _round } from 'lodash-es';
+import { clamp as _clamp, round as _round, isNaN } from 'lodash-es';
 import { getApp } from 'firebase/app';
 
 const LIGHTERPACK_CSV_COLUMNS_MAP: Record<string, number> = {

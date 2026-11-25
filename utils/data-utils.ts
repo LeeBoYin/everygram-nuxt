@@ -5,6 +5,7 @@ import {
     sum as _sum,
     sumBy as _sumBy,
     uniqueId as _uniqueId,
+    isNaN,
 } from 'lodash-es';
 const groupGearsByCategory = <T extends Gear>(
     gears: T[],

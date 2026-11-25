@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts" setup>
+import { isNumber } from 'lodash-es';
 import type { Component } from 'vue';
 import GearCategoryAvatar from './GearCategoryAvatar.vue';
 import CategoryLabel from './CategoryLabel.vue';
