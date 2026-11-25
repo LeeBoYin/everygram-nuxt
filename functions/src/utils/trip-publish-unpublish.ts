@@ -1,12 +1,6 @@
 import * as logger from 'firebase-functions/logger';
 import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
-import type {
-    Gear,
-    GearWithQuantity,
-    Trip,
-    TripShare,
-} from '../../types/types';
 import _ from 'lodash';
 import { toTripShareGear } from './trip-share-gear';
 

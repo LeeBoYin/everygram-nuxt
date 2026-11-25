@@ -1,6 +1,16 @@
-import type { Timestamp } from '@firebase/firestore';
+// frontend 與 functions 共用的全域型別（functions/tsconfig.json 有 include 這個檔案）。
+// 不要 import 只有其中一邊安裝的套件。
+export {};
 
 declare global {
+    // 只宣告用得到的欄位，讓 client SDK 與 admin SDK 的 Timestamp 都相容
+    type Timestamp = {
+        readonly seconds: number;
+        readonly nanoseconds: number;
+        toDate(): Date;
+        toMillis(): number;
+    };
+
     type UserMeta = {
         userId: string;
         locale: Locale | null;
@@ -75,7 +85,7 @@ declare global {
         archived?: Timestamp;
         photo?: StorageImage;
         description?: string;
-        privateNote?: string;
+        privateNote?: string; // for owner only, not shared in trip share
         price?: number;
         currency?: CurrencyCode;
         acquiredDate?: string; // ISO string or Date

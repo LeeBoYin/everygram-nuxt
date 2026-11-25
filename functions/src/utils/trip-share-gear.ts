@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import type { Gear, GearWithQuantity } from '../../types/types';
 
 // tripShare is publicly readable: only these gear fields are copied into it.
 // Add a field here only if it is meant to be seen by anyone.

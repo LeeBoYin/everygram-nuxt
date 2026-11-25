@@ -1,7 +1,6 @@
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { onDocumentDeleted } from 'firebase-functions/v2/firestore';
-import type { Trip } from '../../types/types';
 import _ from 'lodash';
 
 export const onGearDeleted = onDocumentDeleted(
