@@ -20,7 +20,7 @@
         "@pinia/nuxt": "^0.5.5",
         "@types/papaparse": "^5.5.2",
         "husky": "^9.1.7",
-        "lint-staged": "^15.5.2",
+        "lint-staged": "^17.6.2",
         "nuxt": "^3.21.11",
         "nuxt-lodash": "^2.5.3",
         "nuxt-primevue": "^0.3.1",
@@ -31,14 +31,13 @@
         "@vuelidate/core": "^2.0.3",
         "@vuelidate/validators": "^2.0.4",
         "compressorjs": "^1.4.0",
-        "firebase": "^11.10.0",
-        "marked": "^15.0.12",
+        "firebase": "^13.4.0",
+        "marked": "^18.3.0",
         "papaparse": "^5.7.1",
         "pinia": "^2.3.1",
         "primeicons": "^7.0.0",
         "primevue": "^3.53.1",
-        "ua-parser-js": "^2.0.10",
-        "uuid": "^9.0.1"
+        "ua-parser-js": "^2.0.10"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
