@@ -15,7 +15,7 @@ if (!constants.LOCALES.includes(locale.value)) {
 
 const content = ref<string>('');
 const i18n = useI18n();
-i18n.setLocale(locale.value);
+await i18n.setLocale(locale.value);
 const pageTitle = i18n.t('META_PRIVACY_TITLE');
 
 switch (locale.value) {
