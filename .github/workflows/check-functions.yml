@@ -1,0 +1,33 @@
+name: Check functions
+
+on:
+    pull_request:
+        branches: [master]
+        paths:
+            - 'functions/**'
+            - 'types/types.d.ts'
+            - 'utils/constants/gear-brands.ts'
+            - 'utils/constants/gear-categories.ts'
+            - 'firebase.json'
+            - '.github/workflows/deploy-functions.yml'
+            - '.github/workflows/check-functions.yml'
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: npm
+                  cache-dependency-path: functions/package-lock.json
+
+            - run: npm ci --prefix functions
+
+            - run: npm --prefix functions run build
