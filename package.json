@@ -15,27 +15,23 @@
         "deploy-rules": "firebase deploy --only firestore:rules,storage"
     },
     "devDependencies": {
-        "@nuxt/devtools": "latest",
+        "@nuxt/devtools": "^1.2.0",
         "@nuxtjs/i18n": "^8.3.1",
         "@pinia/nuxt": "^0.5.1",
         "@types/papaparse": "^5.3.16",
-        "globals": "^15.1.0",
         "husky": "^9.0.11",
         "lint-staged": "^15.2.2",
         "nuxt": "^3.8.2",
         "nuxt-lodash": "^2.5.3",
         "nuxt-primevue": "^0.3.1",
         "prettier": "3.2.5",
-        "sass": "^1.76.0",
-        "vue": "^3.3.12",
-        "vue-router": "^4.2.5"
+        "sass": "^1.76.0"
     },
     "dependencies": {
         "@vuelidate/core": "^2.0.3",
         "@vuelidate/validators": "^2.0.4",
         "compressorjs": "^1.2.1",
         "firebase": "^11.9.1",
-        "firebase-admin": "^12.1.0",
         "marked": "^15.0.12",
         "papaparse": "^5.4.1",
         "pinia": "^2.1.7",
