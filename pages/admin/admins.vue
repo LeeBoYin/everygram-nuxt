@@ -89,6 +89,19 @@
             </template>
         </PrimeColumn>
     </PrimeDataTable>
+
+    <AdminCard title="歷史資料" class="mt-3">
+        <p class="mt-0 text-color-secondary">
+            用現有資料的建立時間，回補每個月新增的使用者、裝備和行程數。可以重複執行，會覆寫上次的結果。已刪除的資料不會算到。
+        </p>
+        <PrimeButton
+            label="回補歷史資料"
+            icon="pi pi-history"
+            outlined
+            :loading="isBackfilling"
+            @click="onBackfill"
+        />
+    </AdminCard>
 </template>
 
 <script setup lang="ts">
@@ -121,6 +134,9 @@ const confirm = useConfirm();
 const toast = useToast();
 const { errorToast } = useErrorToast();
 
+const { backfillHistory } = useAdminStats();
+
+const isBackfilling = ref(false);
 const adminUsers = ref<AdminUser[]>([]);
 const isLoading = ref(true);
 const savingEmail = ref<string | null>(null);
@@ -228,6 +244,23 @@ const addedByLabel = (addedBy: string) => {
         (adminUser) => adminUser.uid === addedBy,
     );
     return adder ? adder.displayName || adder.email : addedBy;
+};
+
+const onBackfill = async () => {
+    isBackfilling.value = true;
+    try {
+        const { monthCount } = await backfillHistory();
+        toast.add({
+            severity: 'success',
+            summary: '已回補歷史資料',
+            detail: `共 ${monthCount} 個月`,
+            life: constants.TOAST_TTL,
+        });
+    } catch (error: any) {
+        errorToast(ERROR_MESSAGES[error?.code] ?? '回補失敗', error);
+    } finally {
+        isBackfilling.value = false;
+    }
 };
 
 onMounted(fetchAdminUsers);

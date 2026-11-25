@@ -42,15 +42,15 @@
                     class="flex justify-content-end align-items-center gap-3 mb-3"
                 >
                     <span class="text-sm text-color-secondary">
-                        最後更新：—
+                        最後更新：{{ lastUpdated }}
                     </span>
-                    <!-- enabled in P2 with the stats functions -->
                     <PrimeButton
                         label="重新計算"
                         icon="pi pi-refresh"
                         size="small"
                         outlined
-                        disabled
+                        :loading="isRefreshing"
+                        @click="refreshStats"
                     />
                 </div>
                 <slot />
@@ -61,14 +61,25 @@
 
 <script setup lang="ts">
 const { isOwner } = useAdminRole();
+const { latest, isRefreshing, fetchStats, refreshStats } = useAdminStats();
+
+const lastUpdated = computed(() =>
+    latest.value
+        ? latest.value.computedAt
+              .toDate()
+              .toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })
+        : '—',
+);
+
+onMounted(fetchStats);
 
 // items without `to` are not available yet
 const navItems = computed<{ label: string; icon: string; to?: string }[]>(
     () => [
         { label: '總覽', icon: 'pi pi-home', to: '/admin' },
-        { label: '使用者', icon: 'pi pi-users' },
-        { label: '裝備', icon: 'pi pi-box' },
-        { label: '行程', icon: 'pi pi-map' },
+        { label: '使用者', icon: 'pi pi-users', to: '/admin/users' },
+        { label: '裝備', icon: 'pi pi-box', to: '/admin/gears' },
+        { label: '行程', icon: 'pi pi-map', to: '/admin/trips' },
         { label: '趨勢', icon: 'pi pi-chart-line' },
         { label: '歷史', icon: 'pi pi-history' },
         ...(isOwner.value
