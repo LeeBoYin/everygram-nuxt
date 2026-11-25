@@ -90,3 +90,40 @@ export const useAdminStats = () => {
         backfillHistory,
     };
 };
+
+// all monthly snapshots (oldest first) and the backfill, for the trends and the
+// history pages
+export const useAdminHistory = () => {
+    const snapshots = ref<AdminStats[]>([]);
+    const backfill = ref<AdminBackfill | null>(null);
+    const isLoading = ref(true);
+    const hasError = ref(false);
+    const { errorToast } = useErrorToast();
+
+    onMounted(async () => {
+        try {
+            const db = firebaseUtils.getFirestoreDB();
+            const [snapshotDocs, backfillDoc] = await Promise.all([
+                // ordering by `period` also leaves out the `backfill` document
+                getDocs(
+                    query(
+                        collection(db, 'adminSnapshots'),
+                        orderBy('period', 'asc'),
+                    ),
+                ),
+                getDoc(doc(db, 'adminSnapshots', 'backfill')),
+            ]);
+            snapshots.value = snapshotDocs.docs.map(
+                (snapshot) => snapshot.data() as AdminStats,
+            );
+            backfill.value = (backfillDoc.data() as AdminBackfill) ?? null;
+        } catch (error) {
+            hasError.value = true;
+            errorToast('讀取歷史資料失敗', error);
+        } finally {
+            isLoading.value = false;
+        }
+    });
+
+    return { snapshots, backfill, isLoading, hasError };
+};

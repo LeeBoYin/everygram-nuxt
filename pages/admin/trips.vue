@@ -76,6 +76,9 @@
                 </AdminCard>
             </div>
             <div class="col-12">
+                <AdminViewGrowth />
+            </div>
+            <div class="col-12">
                 <AdminCard title="發佈最多公開行程的使用者">
                     <AdminRankTable
                         :columns="CREATOR_COLUMNS"

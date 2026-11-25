@@ -14,24 +14,15 @@
                 </NuxtLink>
                 <div class="text-sm text-color-secondary mt-2">管理後台</div>
             </div>
-            <template v-for="item in navItems" :key="item.label">
-                <NuxtLink
-                    v-if="item.to"
-                    :to="item.to"
-                    class="admin-layout__nav-item"
-                    exact-active-class="admin-layout__nav-item--active"
-                >
-                    <i :class="item.icon"></i>{{ item.label }}
-                </NuxtLink>
-                <span
-                    v-else
-                    class="admin-layout__nav-item admin-layout__nav-item--disabled"
-                    title="尚未開放"
-                    aria-disabled="true"
-                >
-                    <i :class="item.icon"></i>{{ item.label }}
-                </span>
-            </template>
+            <NuxtLink
+                v-for="item in navItems"
+                :key="item.to"
+                :to="item.to"
+                class="admin-layout__nav-item"
+                exact-active-class="admin-layout__nav-item--active"
+            >
+                <i :class="item.icon"></i>{{ item.label }}
+            </NuxtLink>
             <NuxtLink to="/trips" class="admin-layout__nav-item mt-auto">
                 <i class="pi pi-arrow-left"></i>回到 Everygram
             </NuxtLink>
@@ -73,20 +64,17 @@ const lastUpdated = computed(() =>
 
 onMounted(fetchStats);
 
-// items without `to` are not available yet
-const navItems = computed<{ label: string; icon: string; to?: string }[]>(
-    () => [
-        { label: '總覽', icon: 'pi pi-home', to: '/admin' },
-        { label: '使用者', icon: 'pi pi-users', to: '/admin/users' },
-        { label: '裝備', icon: 'pi pi-box', to: '/admin/gears' },
-        { label: '行程', icon: 'pi pi-map', to: '/admin/trips' },
-        { label: '趨勢', icon: 'pi pi-chart-line' },
-        { label: '歷史', icon: 'pi pi-history' },
-        ...(isOwner.value
-            ? [{ label: '管理者', icon: 'pi pi-shield', to: '/admin/admins' }]
-            : []),
-    ],
-);
+const navItems = computed(() => [
+    { label: '總覽', icon: 'pi pi-home', to: '/admin' },
+    { label: '使用者', icon: 'pi pi-users', to: '/admin/users' },
+    { label: '裝備', icon: 'pi pi-box', to: '/admin/gears' },
+    { label: '行程', icon: 'pi pi-map', to: '/admin/trips' },
+    { label: '趨勢', icon: 'pi pi-chart-line', to: '/admin/trends' },
+    { label: '歷史', icon: 'pi pi-history', to: '/admin/snapshots' },
+    ...(isOwner.value
+        ? [{ label: '管理者', icon: 'pi pi-shield', to: '/admin/admins' }]
+        : []),
+]);
 </script>
 
 <style scoped lang="scss">
@@ -121,13 +109,6 @@ $sidebar-width: 220px;
         &--active,
         &--active:hover {
             background-color: $eg-c-primary-lighter;
-        }
-
-        &--disabled,
-        &--disabled:hover {
-            background-color: transparent;
-            opacity: 0.4;
-            cursor: default;
         }
     }
 

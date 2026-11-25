@@ -1,6 +1,6 @@
 # Everygram 管理後台（Admin Dashboard）實作規格
 
-> 狀態：規格已確認（2026-11-26），待實作。
+> 狀態：已實作（P1–P3）。規格於 2026-11-26 確認。
 > 實作時如果發現和本文件不一致，先停下來問，確認後程式和文件一起改。
 
 ## 目標
@@ -123,8 +123,16 @@ type TopCreator = {
 ```
 
 - 型別放在 `types/types.d.ts`（前端和 functions 共用）。
-- 「本月瀏覽增加 Top 20」**不存**，由前端用本月和上月 snapshot 的 `viewCounts` 相減算出來。
+- 「本月瀏覽增加 Top 20」**不存**，由前端用 `latest` 和最新一份 snapshot（上個月底）的 `viewCounts` 相減算出來。
 - 品牌正規化規則沿用舊的 `findCustomBrands`：`trim().toLowerCase().replace(/\s+/g, ' ')`。
+
+### 統計口徑
+
+- 每人裝備數／行程數和啟用漏斗用 `userMeta` 的計數，只算 Auth 裡還存在的帳號，讓漏斗和分桶一致。`userMeta` 由前端寫入，可能和實際筆數有落差。
+- `gears.total` 包含封存和單次行程裝備（`isForOneTrip`）。
+- 沒有 `lastRefreshTime` 的帳號不算 DAU/WAU/MAU；沉睡判斷退回登入時間、再退回註冊時間，避免剛註冊的人被算成沉睡。使用者列表的「最後活躍」也退回登入時間。
+- 缺欄位：分佈圖算「未設定」；舊欄位 `imgUrl` 算有照片。
+- `totalViews` 和 `viewCounts` 含所有 `tripMeta`；`topViewed` 只列目前公開、瀏覽 > 0 的行程（沒公開的行程連結打不開）。
 
 ### `adminSnapshots/backfill`（一次性回補，只存每月新增量）
 
@@ -153,7 +161,7 @@ match /adminUsers/{uid}     { allow read: if isAdmin(); allow write: if false; }
 
 ## Cloud Functions（`functions/src/admin/`）
 
-所有 callable 一開頭都要檢查 `request.auth?.token.adminRole`，不符合就丟 `permission-denied`。區域沿用 `asia-northeast1`。
+所有 callable 一開頭都要檢查 `request.auth?.token.adminRole`，也要檢查 `adminUsers` 目前的角色，不符合就丟 `permission-denied`（被移除的管理者，舊 token 最多還能用 1 小時）。區域沿用 `asia-northeast1`。
 
 | 檔案                        | 類型                                             | 權限  | 做什麼                                                                                                                          |
 | --------------------------- | ------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -164,6 +172,9 @@ match /adminUsers/{uid}     { allow read: if isAdmin(); allow write: if false; }
 | `get-admin-users.ts`        | callable `getAdminUsers`                         | admin | 即時回傳全部使用者列表（見「使用者」頁）。**不存進 Firestore**，避免 PII 多一份副本                                             |
 | `set-admin-role.ts`         | callable `setAdminRole({ email, role \| null })` | owner | `getUserByEmail` → `setCustomUserClaims`（保留其他 claims）→ 寫入或刪除 `adminUsers/{uid}`。不能改自己；不能讓 owner 數量變成 0 |
 
+- `setAdminRole` 在 transaction 裡寫 `adminUsers`，同時檢查呼叫者仍是 owner，避免兩位 owner 同時互相移除；claims 寫入失敗會還原 `adminUsers`。它用 email 找帳號，不檢查 `emailVerified`（產品方決定維持現狀）。
+- `monthlyAdminSnapshot` 只讀一次資料，snapshot 和 `latest` 分開彙總，讓 `latest` 的「本月新增」維持當月。`timeoutSeconds: 300`、`memory: '512MiB'`。
+- `getAdminUsers`、`backfillAdminHistory` 用 `memory: '512MiB'`（backfill 另外 `timeoutSeconds: 300`）。
 - `index.ts`：export 上面的 function，**移除** `findCustomBrands`，並刪除 `cron-jobs/find-custom-brands.ts`。
 - `customBrands` collection 的舊資料**先不刪**，等 owner 確認後再手動到 console 刪除。
 - `computeStats` 要容忍舊資料：缺欄位一律當 `undefined`，不能讓整個函式 throw。
@@ -201,6 +212,29 @@ match /adminUsers/{uid}     { allow read: if isAdmin(); allow write: if false; }
 
 `getAdminUsers` 每列回傳的欄位：`uid, email, displayName, provider, created, lastActive, gearCount, tripCount, tripShareCount, locale`（後四個來自 `userMeta`）。
 
+手機版選單不加後台入口。
+
+### 趨勢頁
+
+- 每個選到的指標各畫一張折線圖（一列兩張），用核取方塊多選，預設全選。理由：指標的量級差很多（例如裝備總數和每月新增行程），共用一個 Y 軸會看不出變化。
+- 橫軸是連續的月份。
+- 每月新增：同一個月 backfill 和 snapshot 都有值時，用 snapshot 的 `newThisMonth`（它在月底計算；backfill 只算執行當下還存在的資料，執行當月也不完整）。
+- backfill 範圍內（第一個有資料的月份到執行月份）缺的月份算 0。其他沒有資料的月份顯示斷線。
+- 回補執行當月還沒有 snapshot 時，頁面提示該月不完整。
+- 總數類指標只用 snapshot。讀 `adminSnapshots` 用 `orderBy('period')`，自然排除 `backfill`。
+
+### 歷史頁
+
+- 下拉選單預設選最新的月份。
+- 「比上月」只和**前一個月**的 snapshot 比；缺那個月就顯示「—」。
+
+### 本月瀏覽增加 Top 20
+
+- `latest` 的 `viewCounts` 減最新一份 snapshot 的 `viewCounts`；snapshot 裡沒有的行程當 0；只列增加 > 0 的。
+- 標題、作者、發佈日由前端讀 `tripShare`；讀不到（已不公開）就跳過，往下遞補。
+- 不顯示 email（`tripShare` 沒有，不為此多呼叫 callable）。
+- 頁面標示比較的 snapshot 月份；沒有 snapshot 時顯示說明文字。
+
 ### 圖表
 
 - 安裝 `chart.js`，使用 PrimeVue 3 的 `Chart` 元件，在 `plugins/primevue.ts` 註冊。
@@ -217,6 +251,7 @@ middleware/admin-guard.ts                 新增
 layouts/admin.vue                         新增
 pages/admin/{index,users,gears,trips,trends,snapshots,admins}.vue  新增
 components/admin/*.vue                    KPI 卡、分佈長條圖、排行表、趨勢圖
+utils/admin-format.ts、admin-trends.ts    格式化、趨勢合併與瀏覽增量計算
 composables/use-admin-stats.ts            讀 latest / snapshots、呼叫 callable
 components/UserMenu.vue（或對應檔）        + 管理後台入口
 functions/src/admin/*.ts                  新增
