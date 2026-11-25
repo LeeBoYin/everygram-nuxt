@@ -9,6 +9,7 @@ import VirtualScrollerStyle from 'primevue/virtualscroller/style';
 
 import Button from 'primevue/button';
 import Calendar from 'primevue/calendar';
+import Chart from 'primevue/chart';
 import Checkbox from 'primevue/checkbox';
 import Column from 'primevue/column';
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -38,6 +39,7 @@ import Toast from 'primevue/toast';
 const components = {
     Button,
     Calendar,
+    Chart,
     Checkbox,
     Column,
     ConfirmDialog,

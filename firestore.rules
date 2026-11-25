@@ -4,6 +4,14 @@ service cloud.firestore {
 		return request.auth != null;
 	}
 
+	function adminRole() {
+		return request.auth != null ? request.auth.token.adminRole : null;
+	}
+
+	function isAdmin() {
+		return adminRole() in ['owner', 'admin'];
+	}
+
 	match /databases/{database}/documents {
 		// gear
 		match /gear/{gearID} {
@@ -38,6 +46,22 @@ service cloud.firestore {
 		// user meta
 		match /userMeta/{userID} {
 			allow create, read, update, delete: if isAuthenticated() && userID == request.auth.uid;
+		}
+
+		// admin dashboard, only the admin SDK is allowed to write
+		match /adminStats/{doc} {
+			allow read: if isAdmin();
+			allow write: if false;
+		}
+
+		match /adminSnapshots/{doc} {
+			allow read: if isAdmin();
+			allow write: if false;
+		}
+
+		match /adminUsers/{userID} {
+			allow read: if isAdmin();
+			allow write: if false;
 		}
 	}
 }

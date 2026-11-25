@@ -29,5 +29,11 @@ export { onUserProfileUpdated } from './callable-functions/on-user-profile-updat
 export { getLighterPackPackData } from './callable-functions/get-lighter-pack-data';
 export { convertLighterpackGears } from './callable-functions/convert-lighterpack-gears';
 
+// admin dashboard
+export { setAdminRole } from './admin/set-admin-role';
+export { refreshAdminStats } from './admin/refresh-admin-stats';
+export { getAdminUsers } from './admin/get-admin-users';
+export { backfillAdminHistory } from './admin/backfill-admin-history';
+
 // cron jobs
-export { findCustomBrands } from './cron-jobs/find-custom-brands';
+export { monthlyAdminSnapshot } from './admin/monthly-admin-snapshot';

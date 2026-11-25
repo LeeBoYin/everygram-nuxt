@@ -22,6 +22,114 @@ declare global {
         lastUpdated: Timestamp;
     };
 
+    // custom claim: request.auth.token.adminRole
+    type AdminRole = 'owner' | 'admin';
+
+    // adminUsers/{uid}：claims 的鏡像，只由 admin SDK 寫入
+    type AdminUser = {
+        uid: string;
+        email: string;
+        displayName: string;
+        role: AdminRole;
+        addedBy: string; // uid，第一位 owner 由 script 建立時填 'bootstrap'
+        added: Timestamp;
+    };
+
+    type CountItem = { key: string; count: number };
+
+    // adminStats/latest 與 adminSnapshots/{YYYY-MM}，只由 admin SDK 寫入
+    type AdminStats = {
+        computedAt: Timestamp;
+        period?: string; // 'YYYY-MM'，只有 snapshot 才有
+        users: {
+            total: number;
+            newThisMonth: number; // creationTime 落在 period 或當月
+            dau: number; // lastRefreshTime 在 1 天內
+            wau: number; // 7 天內
+            mau: number; // 30 天內
+            dormant90d: number; // 超過 90 天沒活躍
+            withGear: number; // gearCount >= 1
+            withTrip: number; // tripCount >= 1
+            withPublicTrip: number; // tripShareCount >= 1
+            byProvider: CountItem[]; // google.com / password / ...
+            byLocale: CountItem[]; // en / zh-tw / ja / null→'unset'
+            byCurrency: CountItem[];
+        };
+        gears: {
+            total: number;
+            active: number;
+            archived: number;
+            newThisMonth: number;
+            perUserAvg: number; // 只算 userMeta 存在的使用者，含 0
+            perUserMedian: number;
+            perUserBuckets: CountItem[]; // '0' | '1-10' | '11-50' | '51-100' | '100+'
+            byCategory: CountItem[];
+            topBrands: CountItem[]; // Top 30，內建品牌用 key、自訂品牌用 'custom:' + 正規化名稱
+            topCustomBrands: CountItem[]; // Top 50，候選加入內建品牌清單
+            byArchiveReason: CountItem[];
+            withPhoto: number;
+            withPrice: number;
+            bySource: CountItem[]; // csv / lp / manual
+        };
+        trips: {
+            total: number;
+            private: number;
+            public: number;
+            newThisMonth: number;
+            perUserAvg: number;
+            avgGearsPerTrip: number; // gears + wornGears 的種類數
+            emptyTrips: number; // 0 件裝備
+            byDateMode: CountItem[];
+            withBanner: number;
+            publicAvgBaseWeight: number; // 來自 tripShare.baseWeight（g）
+        };
+        publicTrips: {
+            totalViews: number;
+            topViewed: TopTrip[]; // Top 20，依累計 viewCount
+            viewCounts: Record<string, number>; // tripId → viewCount，用來算月增量
+            topCreators: TopCreator[]; // Top 10，依公開行程數
+        };
+    };
+
+    type TopTrip = {
+        tripId: string;
+        title: string;
+        ownerName: string;
+        ownerEmail: string;
+        viewCount: number;
+        published?: Timestamp;
+    };
+
+    type TopCreator = {
+        uid: string;
+        displayName: string;
+        email: string;
+        count: number;
+    };
+
+    // adminSnapshots/backfill：一次性回補，只存每月新增量
+    type AdminBackfill = {
+        computedAt: Timestamp;
+        months: Record<
+            string, // 'YYYY-MM'
+            { newUsers: number; newGears: number; newTrips: number }
+        >;
+    };
+
+    // callable getAdminUsers 的回傳列（不存進 Firestore）
+    type AdminUserRow = {
+        uid: string;
+        email: string;
+        displayName: string;
+        provider: string;
+        created: string | null; // ISO string
+        lastActive: string | null; // ISO string
+        gearCount: number;
+        tripCount: number;
+        tripShareCount: number;
+        locale: Locale | null;
+    };
+
     type Locale = 'en' | 'zh-tw' | 'ja';
 
     type CategoryData = { icon: string; color: string };
