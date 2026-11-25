@@ -52,6 +52,10 @@ const tripId = route.params.id as string;
 const tripShareRef = doc(db, 'tripShare', tripId);
 const tripShareSnap = await getDoc(tripShareRef);
 const tripShare: TripShare | null = (tripShareSnap.data() as TripShare) || null;
+if (!tripShare) {
+    // the OG image generator relies on this status to skip the screenshot
+    throw createError({ statusCode: 404, fatal: true });
+}
 const gearsInTrip: GearWithQuantity[] = _values(tripShare?.gears || []);
 const wornGearsInTrip: GearWithQuantity[] = _values(tripShare?.wornGears || []);
 const consumablesInTrip: Consumable[] = _values(tripShare?.consumables || []);

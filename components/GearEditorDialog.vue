@@ -66,11 +66,8 @@
                     <FormField :label="$t('LABEL_CATEGORY')">
                         <PrimeDropdown
                             v-model="formState.category"
-                            :options="
-                                selectableCategories.map((category) => ({
-                                    value: category,
-                                }))
-                            "
+                            :options="categoryOptions"
+                            optionLabel="label"
                             optionValue="value"
                             :placeholder="$t('ACTION_SELECT_A_CATEGORY')"
                             class="w-full"
@@ -265,6 +262,13 @@ const selectableCategories = computed(() =>
     categories.value
         ? _intersection(constants.GEAR_CATEGORY_KEYS, categories.value)
         : constants.GEAR_CATEGORY_KEYS,
+);
+const { gearCategoryToLabel } = useLangUtils();
+const categoryOptions = computed(() =>
+    selectableCategories.value.map((category) => ({
+        value: category,
+        label: gearCategoryToLabel(category),
+    })),
 );
 
 // form state and validation rules

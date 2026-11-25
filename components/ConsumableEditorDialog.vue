@@ -76,11 +76,8 @@
             <FormField :label="$t('LABEL_CATEGORY')">
                 <PrimeDropdown
                     v-model="formState.category"
-                    :options="
-                        constants.CONSUMABLE_CATEGORY_KEYS.map((category) => ({
-                            value: category,
-                        }))
-                    "
+                    :options="categoryOptions"
+                    optionLabel="label"
                     optionValue="value"
                     :placeholder="$t('ACTION_SELECT_A_CATEGORY')"
                     class="w-full"
@@ -155,6 +152,12 @@ const isOpen = computed(
 );
 
 const { consumableCategoryToLabel } = useLangUtils();
+const categoryOptions = computed(() =>
+    constants.CONSUMABLE_CATEGORY_KEYS.map((category) => ({
+        value: category,
+        label: consumableCategoryToLabel(category),
+    })),
+);
 const userTripsStore = useUserTripsStore();
 const trip = computed(() => userTripsStore.getTripById(props.tripId));
 
