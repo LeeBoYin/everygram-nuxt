@@ -168,7 +168,7 @@ npm run dev:emulator
 
 Run them in two terminals, then open [http://localhost:3000](http://localhost:3000). "Sign in with Google" opens the Auth emulator, where you can create test accounts. The emulator UI is at [http://127.0.0.1:4000](http://127.0.0.1:4000). Data is saved to `.emulator-data/` when the emulators stop; delete the folder to start over.
 
-The Lighterpack import is not supported, as it requires App Check and an Anthropic API key.
+App Check needs no setup: the app sends a placeholder token that only the Functions emulator accepts. The Lighterpack import also needs `ANTHROPIC_API_KEY` in `functions/.secret.local` (see step 6), and it fetches the real lighterpack.com.
 
 To run the automated tests (Firestore rules and Cloud Functions, on fresh emulators), stop the running emulators first, then:
 
