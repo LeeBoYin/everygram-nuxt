@@ -12,6 +12,7 @@
         "prettier": "npx prettier . --write",
         "emulator": "firebase emulators:start",
         "test:rules": "firebase emulators:exec --only firestore --project demo-everygram \"node --test tests/*.test.mjs\"",
+        "test:functions": "node tests/functions/run.mjs",
         "deploy-functions": "firebase deploy --only functions",
         "deploy-rules": "firebase deploy --only firestore:rules,storage"
     },

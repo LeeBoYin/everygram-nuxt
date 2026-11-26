@@ -8,13 +8,15 @@ import {
     doc,
     onSnapshot,
     serverTimestamp,
+    getDoc,
     getDocs,
     query,
     where,
     deleteField,
     runTransaction,
+    writeBatch,
 } from 'firebase/firestore';
-import type { DocumentData } from 'firebase/firestore';
+import type { DocumentData, DocumentSnapshot } from 'firebase/firestore';
 
 export const useUserGearsStore = defineStore('userGearsStore', () => {
     const db = firebaseUtils.getFirestoreDB();
@@ -93,44 +95,40 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
         const userId = user.value.uid;
         const userGearsDocRef = doc(db, 'userGears', userId);
 
-        // Use a Firestore transaction to create the initial userGears document if needed
-        try {
-            await runTransaction(db, async (transaction) => {
-                const userGearsDocSnap = await transaction.get(userGearsDocRef);
+        // Create the initial userGears document if needed
+        // check if userGears document is missing, or if gears field is empty (in case of data lost)
+        const needsRebuild = (snap: DocumentSnapshot) =>
+            !snap.exists() || isEmpty(snap.data().gears);
 
-                // Check if userGears document exists, or if gears field is empty (in case of data lost)
-                if (
-                    !userGearsDocSnap.exists() ||
-                    isEmpty(userGearsDocSnap.data().gears)
-                ) {
-                    // get all user's gears
-                    const gearDocs = await getDocs(
-                        query(
-                            gearCollectionRef,
-                            where(
-                                `role.${userId}`,
-                                '==',
-                                constants.ROLES.OWNER,
-                            ),
-                        ),
-                    );
-                    const userGears: UserGears = {};
-                    gearDocs.forEach((gearDoc) => {
-                        const gearData = gearDoc.data();
-                        const gearId = gearDoc.id;
-                        userGears[gearId] = formatDataToGearType(
-                            gearId,
-                            gearData,
-                        );
-                    });
-                    transaction.set(userGearsDocRef, {
-                        gears: userGears,
-                        created: serverTimestamp(),
-                    });
-                }
-            });
+        try {
+            if (needsRebuild(await getDoc(userGearsDocRef))) {
+                // get all user's gears
+                // (queries are not supported inside client SDK transactions)
+                const gearDocs = await getDocs(
+                    query(
+                        gearCollectionRef,
+                        where(`role.${userId}`, '==', constants.ROLES.OWNER),
+                    ),
+                );
+                const userGears: UserGears = {};
+                gearDocs.forEach((gearDoc) => {
+                    const gearData = gearDoc.data();
+                    const gearId = gearDoc.id;
+                    userGears[gearId] = formatDataToGearType(gearId, gearData);
+                });
+
+                await runTransaction(db, async (transaction) => {
+                    // check again, the document may have been written meanwhile
+                    if (needsRebuild(await transaction.get(userGearsDocRef))) {
+                        transaction.set(userGearsDocRef, {
+                            gears: userGears,
+                            created: serverTimestamp(),
+                        });
+                    }
+                });
+            }
         } catch (err) {
-            console.error('Error in Firestore transaction for userGears:', err);
+            console.error('Error initializing userGears:', err);
         }
 
         // Listen to userGears document changes
@@ -199,9 +197,12 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
 
             await runTransaction(db, async (transaction) => {
                 transaction.set(gearDocRef, gearData);
-                transaction.update(userGearsDocRef, {
-                    [`gears.${gearId}`]: formattedGear,
-                });
+                // merge, so it also works before userGears has been created
+                transaction.set(
+                    userGearsDocRef,
+                    { gears: { [gearId]: formattedGear } },
+                    { merge: true },
+                );
             });
 
             return formattedGear;
@@ -215,29 +216,31 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
         if (!user.value) {
             return;
         }
+        // merging an empty `gears` map would replace the whole map
+        if (!gears.length) {
+            return;
+        }
         const userId = user.value.uid;
         try {
-            await runTransaction(db, async (transaction) => {
-                const newGears: Gear[] = [];
-                const userGearsDocRef = doc(db, 'userGears', userId);
-                const newGearsFields: Record<string, Gear> = {};
-                gears.forEach((gear) => {
-                    // Create a new gear document reference with an auto-generated ID
-                    const gearDocRef = doc(gearCollectionRef);
-                    const gearId = gearDocRef.id;
-                    const gearData = buildNewGear(userId, gear);
-                    transaction.set(gearDocRef, gearData);
+            // no reads needed, so a batch is enough
+            // a batch holds up to 500 writes: at most constants.LIMIT.importLimit
+            // (200) gears plus 1 userGears write, well within the limit
+            const batch = writeBatch(db);
+            const userGearsDocRef = doc(db, 'userGears', userId);
+            const newGears: Record<string, Gear> = {};
+            gears.forEach((gear) => {
+                // Create a new gear document reference with an auto-generated ID
+                const gearDocRef = doc(gearCollectionRef);
+                const gearId = gearDocRef.id;
+                const gearData = buildNewGear(userId, gear);
+                batch.set(gearDocRef, gearData);
 
-                    // Add new gear to userGears document
-                    const formattedGear = formatDataToGearType(
-                        gearId,
-                        gearData,
-                    );
-                    newGears.push(formattedGear);
-                    newGearsFields[`gears.${gearId}`] = formattedGear;
-                });
-                transaction.update(userGearsDocRef, newGearsFields);
+                // Add new gear to userGears document
+                newGears[gearId] = formatDataToGearType(gearId, gearData);
             });
+            // merge, so it also works before userGears has been created
+            batch.set(userGearsDocRef, { gears: newGears }, { merge: true });
+            await batch.commit();
         } catch (error) {
             console.error(error);
             throw error;
@@ -266,7 +269,7 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
                     transaction.get(gearRef),
                     transaction.get(userGearsDocRef),
                 ]);
-                if (!gearDocSnap.exists || !userGearsDocSnap.exists) {
+                if (!gearDocSnap.exists() || !userGearsDocSnap.exists()) {
                     throw new Error('Document does not exist');
                 }
 
@@ -312,7 +315,7 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
                 // update userGears document
                 transaction.update(userGearsDocRef, {
                     [`gears.${id}`]: formatDataToGearType(id, {
-                        ...gearMap.value[id],
+                        ...gearDocSnap.data(),
                         ...formattedGearData,
                     }),
                 });
@@ -336,15 +339,28 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
 
                 // Read the documents
                 const [gearDocSnap, userGearsDocSnap] = await Promise.all([
-                    transaction.get(gearRef),
+                    // rules deny reading a missing gear doc, so permission-denied
+                    // means its existence cannot be confirmed
+                    transaction.get(gearRef).catch((error) => {
+                        if (error?.code !== 'permission-denied') {
+                            throw error;
+                        }
+                        console.warn(
+                            `deleteGear: cannot read gear ${id}, only removing it from userGears`,
+                        );
+                        return null;
+                    }),
                     transaction.get(userGearsDocRef),
                 ]);
-                if (!gearDocSnap.exists || !userGearsDocSnap.exists) {
+                if (!userGearsDocSnap.exists()) {
                     throw new Error('Document does not exist');
                 }
 
                 // delete gear data
-                transaction.delete(gearRef);
+                // if it is gone, still remove the stale userGears entry
+                if (gearDocSnap?.exists()) {
+                    transaction.delete(gearRef);
+                }
                 // delete userGears document
                 transaction.update(userGearsDocRef, {
                     [`gears.${id}`]: deleteField(),

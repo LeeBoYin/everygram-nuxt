@@ -42,20 +42,15 @@ export const onGearDeleted = onDocumentDeleted(
                 'id',
             );
 
-            const allUpdates = tripsSnapshot.map(async (doc) => {
-                const trip = doc.data() as Trip;
-
-                // delete gear from trip
-                delete trip.gears[gearId];
-
-                // delete worn gear from trip
-                delete trip.wornGears[gearId];
-
-                await doc.ref.update({
-                    ...trip,
+            // only remove the keys of this gear, so concurrent edits to the
+            // trip are not overwritten
+            const allUpdates = tripsSnapshot.map((doc) =>
+                doc.ref.update({
+                    [`gears.${gearId}`]: FieldValue.delete(),
+                    [`wornGears.${gearId}`]: FieldValue.delete(),
                     updated: FieldValue.serverTimestamp(),
-                });
-            });
+                }),
+            );
 
             return Promise.all(allUpdates);
         })();
