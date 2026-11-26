@@ -1,3 +1,5 @@
+// `npm run test:unit` disables `require(esm)` like the Netlify function runtime,
+// so an ESM-only dependency of the sanitizer fails here instead of in production.
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
