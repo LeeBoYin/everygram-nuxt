@@ -10,10 +10,10 @@
         "postinstall": "nuxt prepare",
         "prepare": "husky",
         "prettier": "npx prettier . --write",
-        "emulator": "firebase emulators:start",
+        "test": "npm run test:rules && npm run test:functions",
         "test:rules": "firebase emulators:exec --only firestore --project demo-everygram \"node --test tests/*.test.mjs\"",
         "test:functions": "node scripts/emulators.mjs \"node --test tests/functions/on-gear-deleted.mjs\"",
-        "emulator:local": "node scripts/emulators.mjs",
+        "emulator": "node scripts/emulators.mjs",
         "dev:emulator": "NUXT_PUBLIC_USE_EMULATOR=true nuxt dev",
         "deploy-functions": "firebase deploy --only functions",
         "deploy-rules": "firebase deploy --only firestore:rules,storage"

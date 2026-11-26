@@ -23,7 +23,7 @@ logs
 .env.*
 !.env.example
 
-# Emulator data kept by `npm run emulator:local`
+# Emulator data kept by `npm run emulator`
 .emulator-data
 
 # Claude Code local files
