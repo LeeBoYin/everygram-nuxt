@@ -3,6 +3,7 @@ import { getStorage } from 'firebase-admin/storage';
 import os from 'os';
 import path from 'path';
 import { removeTripOgImage } from '../utils/remove-trip-og-image';
+import { uploadWithDownloadUrl } from '../utils/upload-with-download-url';
 
 const OG_IMAGE_WIDTH = 1200;
 const OG_IMAGE_HEIGHT = 630;
@@ -107,22 +108,17 @@ export const generateTripOgImageAndUpdateMeta = async (
         await browser.close();
     }
 
-    // 3. Upload to Firebase Storage
+    // 3. Upload to Firebase Storage and get download URL
     const bucket = getStorage().bucket();
     const ogImagePath = `trip/${tripId}/og-image`;
     const file = bucket.file(`${ogImagePath}/og-image.jpeg`);
-    await bucket.upload(tempFilePath, {
-        destination: file,
-        metadata: { contentType: 'image/jpeg' },
+    const url = await uploadWithDownloadUrl({
+        localPath: tempFilePath,
+        file,
+        contentType: 'image/jpeg',
     });
 
-    // 4. Get download URL
-    const [url] = await file.getSignedUrl({
-        action: 'read',
-        expires: '01-01-2500',
-    });
-
-    // 5. Update tripMeta.ogImageUrl. The trip can be unpublished while the image
+    // 4. Update tripMeta.ogImageUrl. The trip can be unpublished while the image
     // is being generated, so check tripShare and write in one transaction.
     const db = getFirestore();
     const isStillShared = await db.runTransaction(async (transaction) => {

@@ -1,6 +1,5 @@
-import { ServiceAccount, cert, initializeApp } from 'firebase-admin/app';
+import { initializeApp } from 'firebase-admin/app';
 import { setGlobalOptions } from 'firebase-functions/v2';
-import serviceAccount from './everygram-firebase-adminsdk.json';
 
 // Set the maximum instances to 10 for all functions
 // To fix Error: Error generating the service identity for eventarc.googleapis.com.
@@ -10,9 +9,9 @@ setGlobalOptions({
     timeoutSeconds: 60,
 });
 
-// set credential for admin SDK
+// Application Default Credentials: the runtime service account in the cloud,
+// GOOGLE_APPLICATION_CREDENTIALS for the local emulator
 initializeApp({
-    credential: cert(serviceAccount as ServiceAccount),
     storageBucket: 'everygram.appspot.com',
 });
 

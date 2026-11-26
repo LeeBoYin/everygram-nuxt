@@ -1,0 +1,47 @@
+name: Deploy functions
+
+on:
+    push:
+        branches: [master]
+        paths:
+            - 'functions/**'
+            - 'types/types.d.ts'
+            - 'utils/constants/gear-brands.ts'
+            - 'utils/constants/gear-categories.ts'
+            - 'firebase.json'
+            - '.github/workflows/deploy-functions.yml'
+    workflow_dispatch:
+
+concurrency:
+    group: deploy-functions
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+    id-token: write
+
+jobs:
+    deploy:
+        # GCP 一次性設定完成前（repo variables 還沒填）直接略過
+        if: vars.WIF_PROVIDER != ''
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: npm
+                  cache-dependency-path: functions/package-lock.json
+
+            # build 只需要 functions 的依賴；根目錄的 utils/ 與 types/ 是直接讀原始檔
+            - run: npm ci --prefix functions
+
+            - uses: google-github-actions/auth@v3
+              with:
+                  workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+                  service_account: ${{ vars.DEPLOY_SA_EMAIL }}
+
+            # 不加 --force：刪除 function 一律手動
+            - run: npx --yes firebase-tools@15.37.0 deploy --only functions --project everygram --non-interactive

@@ -101,15 +101,21 @@ To safely develop new features and avoid breaking production, you should set up 
     NUXT_PUBLIC_RECAPTCHA_SITE_KEY=your-recaptch-site-key
     ```
 
-5. **Add Firebase Admin SDK Credentials**
+5. **Add Firebase Admin SDK Credentials (local emulator only)**
 
-    Create your Firebase Admin SDK JSON file at:
+    Generate a service account JSON from your Firebase project settings under "Service accounts" and save it as:
 
     ```
     functions/src/everygram-firebase-adminsdk.json
     ```
 
-    You can generate this file from your Firebase project settings under "Service accounts".
+    Before starting the emulator, point `GOOGLE_APPLICATION_CREDENTIALS` at it in the same shell (`.env.local` does not work):
+
+    ```bash
+    export GOOGLE_APPLICATION_CREDENTIALS="$PWD/functions/src/everygram-firebase-adminsdk.json"
+    ```
+
+    Deployed functions don't use this file. They run with the runtime service account (Application Default Credentials). Also set your own bucket name in `functions/src/index.ts` if your project is not `everygram`.
 
 6. **Set the Anthropic API Key (Lighterpack import)**
 
@@ -145,6 +151,8 @@ To safely develop new features and avoid breaking production, you should set up 
     ```bash
     npm run deploy-functions
     ```
+
+    In the main repository, pushes to `master` deploy functions automatically. See [docs/deploy-functions.md](docs/deploy-functions.md) (Traditional Chinese) for the setup, IAM roles, and what still has to be done manually.
 
 8. **Launch the Nuxt Development Server**
 

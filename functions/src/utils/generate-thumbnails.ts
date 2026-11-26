@@ -5,6 +5,7 @@ import path from 'path';
 import os from 'os';
 import fs from 'fs';
 import sharp from 'sharp';
+import { uploadWithDownloadUrl } from './upload-with-download-url';
 
 export const GEAR_THUMBNAIL_SIZES: ThumbnailOption[] = [
     { width: 128, height: 128, name: 'xs' },
@@ -49,15 +50,10 @@ export const generateThumbnails = async ({
                 .toFile(thumbFilePath);
 
             const thumbFile = bucket.file(path.join(targetPath, thumbFileName));
-            await bucket.upload(thumbFilePath, {
-                destination: thumbFile,
-                metadata: { contentType: 'image/jpeg' },
-            });
-
-            // get download url of thumbFile
-            const [thumbFileUrl] = await thumbFile.getSignedUrl({
-                action: 'read',
-                expires: '01-01-2500',
+            const thumbFileUrl = await uploadWithDownloadUrl({
+                localPath: thumbFilePath,
+                file: thumbFile,
+                contentType: 'image/jpeg',
             });
 
             generatedThumbnails[thumbFileName] = {
