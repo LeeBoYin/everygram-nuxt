@@ -170,3 +170,95 @@ for (const name of ['gear', 'trip']) {
         });
     });
 }
+
+describe('userMeta', () => {
+    const path = `userMeta/${ALICE}`;
+    const defaults = { userId: ALICE, locale: null, currency: null };
+    const counts = {
+        gearCount: 1,
+        archivedGearCount: 1,
+        tripCount: 1,
+        tripShareCount: 1,
+    };
+    const merge = (db, data) => setDoc(doc(db, path), data, { merge: true });
+
+    describe('create', () => {
+        test('without counts succeeds', async () => {
+            await assertSucceeds(merge(dbOf(ALICE), defaults));
+        });
+
+        for (const [field, value] of Object.entries(counts)) {
+            test(`with ${field} fails`, async () => {
+                await assertFails(
+                    setDoc(doc(dbOf(ALICE), path), {
+                        ...defaults,
+                        [field]: value,
+                    }),
+                );
+            });
+        }
+
+        test('by another user fails', async () => {
+            await assertFails(setDoc(doc(dbOf(BOB), path), defaults));
+        });
+    });
+
+    describe('update', () => {
+        beforeEach(() => seed(path, { ...defaults, ...counts }));
+
+        test('of locale and currency succeeds', async () => {
+            await assertSucceeds(
+                updateDoc(doc(dbOf(ALICE), path), {
+                    locale: 'en',
+                    currency: 'USD',
+                }),
+            );
+        });
+
+        test('merging the defaults into an existing doc succeeds', async () => {
+            await assertSucceeds(merge(dbOf(ALICE), defaults));
+        });
+
+        for (const field of Object.keys(counts)) {
+            test(`changing ${field} fails`, async () => {
+                await assertFails(
+                    updateDoc(doc(dbOf(ALICE), path), { [field]: 99 }),
+                );
+            });
+
+            test(`removing ${field} fails`, async () => {
+                await assertFails(
+                    updateDoc(doc(dbOf(ALICE), path), {
+                        [field]: deleteField(),
+                    }),
+                );
+            });
+        }
+
+        test('overwriting the doc without the counts fails', async () => {
+            await assertFails(setDoc(doc(dbOf(ALICE), path), defaults));
+        });
+
+        test('by another user fails', async () => {
+            await assertFails(
+                updateDoc(doc(dbOf(BOB), path), { locale: 'en' }),
+            );
+        });
+    });
+
+    describe('read and delete', () => {
+        beforeEach(() => seed(path, defaults));
+
+        test('reading by the user succeeds', async () => {
+            await assertSucceeds(getDoc(doc(dbOf(ALICE), path)));
+        });
+
+        test('reading by another user fails', async () => {
+            await assertFails(getDoc(doc(dbOf(BOB), path)));
+        });
+
+        test('deleting fails', async () => {
+            await assertFails(deleteDoc(doc(dbOf(ALICE), path)));
+        });
+    });
+});

@@ -15,10 +15,11 @@ declare global {
         userId: string;
         locale: Locale | null;
         currency: CurrencyCode | null;
-        gearCount: number;
-        archivedGearCount: number;
-        tripCount: number;
-        tripShareCount: number;
+        // counts are written by functions, missing until the first one
+        gearCount?: number;
+        archivedGearCount?: number;
+        tripCount?: number;
+        tripShareCount?: number;
         lastUpdated: Timestamp;
     };
 

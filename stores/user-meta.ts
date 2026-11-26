@@ -23,19 +23,21 @@ export const useUserMetaStore = defineStore('userMetaStore', () => {
             userMeta.value = docSnap.data() as UserMeta;
         } else {
             // Create a new userMeta doc with default values
+            // the counts are written by functions, which may create the doc
+            // first: merge, to keep them
             const defaultMeta: Omit<UserMeta, 'lastUpdated'> = {
                 userId: user.value.uid,
                 locale: null,
                 currency: null,
-                gearCount: 0,
-                archivedGearCount: 0,
-                tripCount: 0,
-                tripShareCount: 0,
             };
-            await setDoc(docRef, {
-                ...defaultMeta,
-                lastUpdated: serverTimestamp(),
-            });
+            await setDoc(
+                docRef,
+                {
+                    ...defaultMeta,
+                    lastUpdated: serverTimestamp(),
+                },
+                { merge: true },
+            );
             const newDocSnap = await getDoc(docRef);
             if (newDocSnap.exists()) {
                 userMeta.value = newDocSnap.data() as UserMeta;
