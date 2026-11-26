@@ -7,7 +7,8 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 // Callable function to increment viewCount of a trip
 export const incrementTripShareView = onCall(
-    { region: 'asia-northeast1' },
+    // no auth check: views from signed out visitors count too
+    { region: 'asia-northeast1', enforceAppCheck: true },
     async (request: CallableRequest<any>) => {
         const tripId = request.data?.tripId;
         if (!tripId || typeof tripId !== 'string') {

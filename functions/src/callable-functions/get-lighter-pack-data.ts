@@ -5,12 +5,23 @@ import {
 } from 'firebase-functions/v2/https';
 import { load as cheerioLoad } from 'cheerio';
 import Papa from 'papaparse';
+import { fetchTextWithLimit } from '../utils/fetch-text-with-limit';
+
+// share IDs are currently 6 chars of [0-9a-z], leave room for older or longer ones
+const LIST_ID_PATTERN = /^[A-Za-z0-9]{1,16}$/;
+const FETCH_LIMITS = {
+    timeoutMs: 15_000,
+    maxBytes: 5 * 1024 * 1024,
+};
 
 export const getLighterPackPackData = onCall(
-    { region: 'asia-northeast1' },
+    { region: 'asia-northeast1', enforceAppCheck: true },
     async (request: CallableRequest<any>) => {
+        if (!request.auth) {
+            throw new HttpsError('unauthenticated', 'Login required');
+        }
         const listId = request.data?.listId;
-        if (!listId || typeof listId !== 'string') {
+        if (typeof listId !== 'string' || !LIST_ID_PATTERN.test(listId)) {
             throw new HttpsError(
                 'invalid-argument',
                 'Missing or invalid listId',
@@ -21,13 +32,7 @@ export const getLighterPackPackData = onCall(
         try {
             // 1. fetch CSV in a promise
             const fetchCsvPromise = (async () => {
-                const response = await fetch(csvUrl);
-                if (!response.ok) {
-                    throw new Error(
-                        `Failed to fetch CSV: ${response.statusText}`,
-                    );
-                }
-                const csvText = await response.text();
+                const csvText = await fetchTextWithLimit(csvUrl, FETCH_LIMITS);
                 // Parse CSV using PapaParse
                 return Papa.parse(csvText, {
                     header: false,
@@ -37,13 +42,7 @@ export const getLighterPackPackData = onCall(
 
             // 2. fetch images in a promise
             const fetchImagesPromise = (async () => {
-                const response = await fetch(pageUrl);
-                if (!response.ok) {
-                    throw new Error(
-                        `Failed to fetch page: ${response.statusText}`,
-                    );
-                }
-                const html = await response.text();
+                const html = await fetchTextWithLimit(pageUrl, FETCH_LIMITS);
                 const $ = cheerioLoad(html);
                 const images: Array<{ imgUrlSm: string; imgUrlLg: string }> =
                     [];

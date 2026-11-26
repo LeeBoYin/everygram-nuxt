@@ -1,5 +1,9 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import {
+    CustomProvider,
+    initializeAppCheck,
+    ReCaptchaV3Provider,
+} from 'firebase/app-check';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
@@ -32,6 +36,29 @@ const connectEmulators = (app: FirebaseApp) => {
     connectStorageEmulator(getStorage(app), EMULATOR_HOST, 9199);
     isEmulatorConnected = true;
 };
+// The Functions emulator decodes App Check tokens without verifying them, but
+// still rejects calls that have none. Production rejects this unsigned token.
+const createEmulatorAppCheckProvider = () =>
+    new CustomProvider({
+        getToken: async () => {
+            const encode = (value: object) =>
+                btoa(JSON.stringify(value))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=+$/, '');
+            const expireTimeMillis = Date.now() + 60 * 60 * 1000;
+            const header = encode({ alg: 'none', typ: 'JWT' });
+            const payload = encode({
+                sub: EMULATOR_CONFIG.appId,
+                exp: Math.floor(expireTimeMillis / 1000),
+            });
+            return {
+                token: `${header}.${payload}.emulator`,
+                expireTimeMillis,
+            };
+        },
+    });
+
 export default defineNuxtPlugin({
     name: 'firebase.client',
     async setup(nuxtApp) {
@@ -62,12 +89,14 @@ export default defineNuxtPlugin({
         }
 
         // run only in client side, not on server side render
-        if (process.client && !useEmulator) {
+        if (process.client) {
             // Initialize App Check
             initializeAppCheck(app, {
-                provider: new ReCaptchaV3Provider(
-                    config.public.RECAPTCHA_SITE_KEY as string,
-                ),
+                provider: useEmulator
+                    ? createEmulatorAppCheckProvider()
+                    : new ReCaptchaV3Provider(
+                          config.public.RECAPTCHA_SITE_KEY as string,
+                      ),
                 isTokenAutoRefreshEnabled: true, // Optional: enables auto-refresh of tokens
             });
         }
