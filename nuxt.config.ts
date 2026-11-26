@@ -19,6 +19,8 @@ export default defineNuxtConfig({
             FIREBASE_MEASUREMENT_ID:
                 process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
             RECAPTCHA_SITE_KEY: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY,
+            // dev only, see `npm run dev:emulator`
+            USE_EMULATOR: process.env.NUXT_PUBLIC_USE_EMULATOR,
         },
     },
     devtools: { enabled: true },

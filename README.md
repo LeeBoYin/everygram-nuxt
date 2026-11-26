@@ -153,3 +153,25 @@ To safely develop new features and avoid breaking production, you should set up 
     ```
 
     The app will be available at [http://localhost:3000](http://localhost:3000).
+
+## Local Testing With Emulators
+
+No Firebase project, `.env` or service account key is needed, and nothing reaches real data (the `demo-everygram` project only exists locally). It requires Java and `firebase-tools`, with dependencies installed in both the root and `functions/`.
+
+```bash
+npm run emulator
+```
+
+```bash
+npm run dev:emulator
+```
+
+Run them in two terminals, then open [http://localhost:3000](http://localhost:3000). "Sign in with Google" opens the Auth emulator, where you can create test accounts. The emulator UI is at [http://127.0.0.1:4000](http://127.0.0.1:4000). Data is saved to `.emulator-data/` when the emulators stop; delete the folder to start over.
+
+The Lighterpack import is not supported, as it requires App Check and an Anthropic API key.
+
+To run the automated tests (Firestore rules and Cloud Functions, on fresh emulators), stop the running emulators first, then:
+
+```bash
+npm test
+```
