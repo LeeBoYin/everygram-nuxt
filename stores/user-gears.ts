@@ -266,7 +266,7 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
                     transaction.get(gearRef),
                     transaction.get(userGearsDocRef),
                 ]);
-                if (!gearDocSnap.exists || !userGearsDocSnap.exists) {
+                if (!gearDocSnap.exists() || !userGearsDocSnap.exists()) {
                     throw new Error('Document does not exist');
                 }
 
@@ -336,15 +336,28 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
 
                 // Read the documents
                 const [gearDocSnap, userGearsDocSnap] = await Promise.all([
-                    transaction.get(gearRef),
+                    // rules deny reading a missing gear doc, so permission-denied
+                    // means its existence cannot be confirmed
+                    transaction.get(gearRef).catch((error) => {
+                        if (error?.code !== 'permission-denied') {
+                            throw error;
+                        }
+                        console.warn(
+                            `deleteGear: cannot read gear ${id}, only removing it from userGears`,
+                        );
+                        return null;
+                    }),
                     transaction.get(userGearsDocRef),
                 ]);
-                if (!gearDocSnap.exists || !userGearsDocSnap.exists) {
+                if (!userGearsDocSnap.exists()) {
                     throw new Error('Document does not exist');
                 }
 
                 // delete gear data
-                transaction.delete(gearRef);
+                // if it is gone, still remove the stale userGears entry
+                if (gearDocSnap?.exists()) {
+                    transaction.delete(gearRef);
+                }
                 // delete userGears document
                 transaction.update(userGearsDocRef, {
                     [`gears.${id}`]: deleteField(),
