@@ -1,4 +1,4 @@
-import { debounce as _debounce, keyBy as _keyBy } from 'lodash-es';
+import { keyBy as _keyBy } from 'lodash-es';
 import {
     collection,
     addDoc,
@@ -236,33 +236,6 @@ export const useUserTripsStore = defineStore('userTripsStore', () => {
             throw error;
         }
     };
-
-    // Update trip count in user meta store
-    const userMetaStore = useUserMetaStore();
-    const { userMeta } = storeToRefs(userMetaStore);
-    const updateTripCount = _debounce((_trips: Trip[]) => {
-        if (!userMeta.value) {
-            return;
-        }
-        const tripCount = _trips.length;
-        const tripShareCount = _trips.filter((trip) => trip.isPublished).length;
-        if (
-            userMeta.value.tripCount !== tripCount ||
-            userMeta.value.tripShareCount !== tripShareCount
-        ) {
-            userMetaStore.updateUserMeta({
-                tripCount,
-                tripShareCount,
-            });
-        }
-    }, constants.UPDATE_META_DEBOUNCE_TIME);
-
-    watch(trips, (newTrips) => {
-        if (isFirstFetching.value) {
-            return;
-        }
-        updateTripCount(newTrips);
-    });
 
     return {
         trips,

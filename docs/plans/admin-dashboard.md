@@ -128,7 +128,7 @@ type TopCreator = {
 
 ### 統計口徑
 
-- 每人裝備數／行程數和啟用漏斗用 `userMeta` 的計數，只算 Auth 裡還存在的帳號，讓漏斗和分桶一致。`userMeta` 由前端寫入，可能和實際筆數有落差。
+- 每人裝備數／行程數和啟用漏斗用 `userMeta` 的計數，只算 Auth 裡還存在的帳號，讓漏斗和分桶一致。計數由 functions 維護（`onGearCountsChanged`、`onTripCountsChanged`），前端不能寫。沒有回補舊資料，使用者下一次新增、刪除、封存或公開之前，可能和實際筆數有落差。
 - `gears.total` 包含封存和單次行程裝備（`isForOneTrip`）。
 - 沒有 `lastRefreshTime` 的帳號不算 DAU/WAU/MAU；沉睡判斷退回登入時間、再退回註冊時間，避免剛註冊的人被算成沉睡。使用者列表的「最後活躍」也退回登入時間。
 - 缺欄位：分佈圖算「未設定」；舊欄位 `imgUrl` 算有照片。

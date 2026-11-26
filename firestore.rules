@@ -27,6 +27,10 @@ service cloud.firestore {
 		return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
 	}
 
+	function userMetaCountFields() {
+		return ['gearCount', 'archivedGearCount', 'tripCount', 'tripShareCount'];
+	}
+
 	match /databases/{database}/documents {
 		// gear
 		match /gear/{gearID} {
@@ -60,9 +64,14 @@ service cloud.firestore {
 			allow create, update, delete: if false;
 		}
 		
-		// user meta
+		// user meta, the counts are only written by the admin SDK
 		match /userMeta/{userID} {
-			allow create, read, update, delete: if isAuthenticated() && userID == request.auth.uid;
+			allow read: if isAuthenticated() && userID == request.auth.uid;
+			allow create: if isAuthenticated() && userID == request.auth.uid
+				&& !request.resource.data.keys().hasAny(userMetaCountFields());
+			allow update: if isAuthenticated() && userID == request.auth.uid
+				&& !request.resource.data.diff(resource.data).affectedKeys().hasAny(userMetaCountFields());
+			// no delete: deleting and creating again would reset the counts
 		}
 
 		// admin dashboard, only the admin SDK is allowed to write
