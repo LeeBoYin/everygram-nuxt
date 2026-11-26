@@ -9,17 +9,26 @@ import { getFirestore } from 'firebase-admin/firestore';
 export const onUserProfileUpdated = onCall(
     { region: 'asia-northeast1' },
     async (request: CallableRequest<any>) => {
-        const { userId, displayName, photoURL } = request.data || {};
-        if (!userId || typeof userId !== 'string') {
-            throw new HttpsError(
-                'invalid-argument',
-                'userId is required and must be a string',
-            );
+        // only the signed-in user's own trips can be updated. `userId` sent by
+        // clients is ignored.
+        const userId = request.auth?.uid;
+        if (!userId) {
+            throw new HttpsError('unauthenticated', 'Login required');
         }
+        const { displayName, photoURL } = request.data || {};
         if (!displayName && !photoURL) {
             throw new HttpsError(
                 'invalid-argument',
                 'At least displayName or photoURL must be provided',
+            );
+        }
+        if (
+            (displayName && typeof displayName !== 'string') ||
+            (photoURL && typeof photoURL !== 'string')
+        ) {
+            throw new HttpsError(
+                'invalid-argument',
+                'displayName and photoURL must be strings',
             );
         }
 
