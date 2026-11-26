@@ -65,7 +65,7 @@ const isOwnSrcKey =
     JSON.parse(readFileSync(srcKey, 'utf8')).project_id === PROJECT_ID;
 
 const emulatorArgs = command
-    ? ['emulators:exec', '--only', 'functions,firestore,storage']
+    ? ['emulators:exec', '--only', 'auth,functions,firestore,storage']
     : [
           'emulators:start',
           '--only',

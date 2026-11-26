@@ -12,7 +12,7 @@
         "prettier": "npx prettier . --write",
         "test": "npm run test:rules && npm run test:functions",
         "test:rules": "firebase emulators:exec --only firestore --project demo-everygram \"node --test tests/*.test.mjs\"",
-        "test:functions": "node scripts/emulators.mjs \"node --test tests/functions/on-gear-deleted.mjs\"",
+        "test:functions": "node scripts/emulators.mjs \"node --test --test-concurrency=1 tests/functions/*.mjs\"",
         "emulator": "node scripts/emulators.mjs",
         "dev:emulator": "NUXT_PUBLIC_USE_EMULATOR=true nuxt dev",
         "deploy-functions": "firebase deploy --only functions",
