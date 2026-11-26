@@ -14,6 +14,7 @@ import {
     where,
     deleteField,
     runTransaction,
+    writeBatch,
 } from 'firebase/firestore';
 import type { DocumentData, DocumentSnapshot } from 'firebase/firestore';
 
@@ -221,30 +222,25 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
         }
         const userId = user.value.uid;
         try {
-            await runTransaction(db, async (transaction) => {
-                const userGearsDocRef = doc(db, 'userGears', userId);
-                const newGears: Record<string, Gear> = {};
-                gears.forEach((gear) => {
-                    // Create a new gear document reference with an auto-generated ID
-                    const gearDocRef = doc(gearCollectionRef);
-                    const gearId = gearDocRef.id;
-                    const gearData = buildNewGear(userId, gear);
-                    transaction.set(gearDocRef, gearData);
+            // no reads needed, so a batch is enough
+            // a batch holds up to 500 writes: at most constants.LIMIT.importLimit
+            // (200) gears plus 1 userGears write, well within the limit
+            const batch = writeBatch(db);
+            const userGearsDocRef = doc(db, 'userGears', userId);
+            const newGears: Record<string, Gear> = {};
+            gears.forEach((gear) => {
+                // Create a new gear document reference with an auto-generated ID
+                const gearDocRef = doc(gearCollectionRef);
+                const gearId = gearDocRef.id;
+                const gearData = buildNewGear(userId, gear);
+                batch.set(gearDocRef, gearData);
 
-                    // Add new gear to userGears document
-                    const formattedGear = formatDataToGearType(
-                        gearId,
-                        gearData,
-                    );
-                    newGears[gearId] = formattedGear;
-                });
-                // merge, so it also works before userGears has been created
-                transaction.set(
-                    userGearsDocRef,
-                    { gears: newGears },
-                    { merge: true },
-                );
+                // Add new gear to userGears document
+                newGears[gearId] = formatDataToGearType(gearId, gearData);
             });
+            // merge, so it also works before userGears has been created
+            batch.set(userGearsDocRef, { gears: newGears }, { merge: true });
+            await batch.commit();
         } catch (error) {
             console.error(error);
             throw error;
