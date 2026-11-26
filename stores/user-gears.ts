@@ -8,13 +8,14 @@ import {
     doc,
     onSnapshot,
     serverTimestamp,
+    getDoc,
     getDocs,
     query,
     where,
     deleteField,
     runTransaction,
 } from 'firebase/firestore';
-import type { DocumentData } from 'firebase/firestore';
+import type { DocumentData, DocumentSnapshot } from 'firebase/firestore';
 
 export const useUserGearsStore = defineStore('userGearsStore', () => {
     const db = firebaseUtils.getFirestoreDB();
@@ -93,44 +94,40 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
         const userId = user.value.uid;
         const userGearsDocRef = doc(db, 'userGears', userId);
 
-        // Use a Firestore transaction to create the initial userGears document if needed
-        try {
-            await runTransaction(db, async (transaction) => {
-                const userGearsDocSnap = await transaction.get(userGearsDocRef);
+        // Create the initial userGears document if needed
+        // check if userGears document is missing, or if gears field is empty (in case of data lost)
+        const needsRebuild = (snap: DocumentSnapshot) =>
+            !snap.exists() || isEmpty(snap.data().gears);
 
-                // Check if userGears document exists, or if gears field is empty (in case of data lost)
-                if (
-                    !userGearsDocSnap.exists() ||
-                    isEmpty(userGearsDocSnap.data().gears)
-                ) {
-                    // get all user's gears
-                    const gearDocs = await getDocs(
-                        query(
-                            gearCollectionRef,
-                            where(
-                                `role.${userId}`,
-                                '==',
-                                constants.ROLES.OWNER,
-                            ),
-                        ),
-                    );
-                    const userGears: UserGears = {};
-                    gearDocs.forEach((gearDoc) => {
-                        const gearData = gearDoc.data();
-                        const gearId = gearDoc.id;
-                        userGears[gearId] = formatDataToGearType(
-                            gearId,
-                            gearData,
-                        );
-                    });
-                    transaction.set(userGearsDocRef, {
-                        gears: userGears,
-                        created: serverTimestamp(),
-                    });
-                }
-            });
+        try {
+            if (needsRebuild(await getDoc(userGearsDocRef))) {
+                // get all user's gears
+                // (queries are not supported inside client SDK transactions)
+                const gearDocs = await getDocs(
+                    query(
+                        gearCollectionRef,
+                        where(`role.${userId}`, '==', constants.ROLES.OWNER),
+                    ),
+                );
+                const userGears: UserGears = {};
+                gearDocs.forEach((gearDoc) => {
+                    const gearData = gearDoc.data();
+                    const gearId = gearDoc.id;
+                    userGears[gearId] = formatDataToGearType(gearId, gearData);
+                });
+
+                await runTransaction(db, async (transaction) => {
+                    // check again, the document may have been written meanwhile
+                    if (needsRebuild(await transaction.get(userGearsDocRef))) {
+                        transaction.set(userGearsDocRef, {
+                            gears: userGears,
+                            created: serverTimestamp(),
+                        });
+                    }
+                });
+            }
         } catch (err) {
-            console.error('Error in Firestore transaction for userGears:', err);
+            console.error('Error initializing userGears:', err);
         }
 
         // Listen to userGears document changes
@@ -199,9 +196,12 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
 
             await runTransaction(db, async (transaction) => {
                 transaction.set(gearDocRef, gearData);
-                transaction.update(userGearsDocRef, {
-                    [`gears.${gearId}`]: formattedGear,
-                });
+                // merge, so it also works before userGears has been created
+                transaction.set(
+                    userGearsDocRef,
+                    { gears: { [gearId]: formattedGear } },
+                    { merge: true },
+                );
             });
 
             return formattedGear;
@@ -215,12 +215,15 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
         if (!user.value) {
             return;
         }
+        // merging an empty `gears` map would replace the whole map
+        if (!gears.length) {
+            return;
+        }
         const userId = user.value.uid;
         try {
             await runTransaction(db, async (transaction) => {
-                const newGears: Gear[] = [];
                 const userGearsDocRef = doc(db, 'userGears', userId);
-                const newGearsFields: Record<string, Gear> = {};
+                const newGears: Record<string, Gear> = {};
                 gears.forEach((gear) => {
                     // Create a new gear document reference with an auto-generated ID
                     const gearDocRef = doc(gearCollectionRef);
@@ -233,10 +236,14 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
                         gearId,
                         gearData,
                     );
-                    newGears.push(formattedGear);
-                    newGearsFields[`gears.${gearId}`] = formattedGear;
+                    newGears[gearId] = formattedGear;
                 });
-                transaction.update(userGearsDocRef, newGearsFields);
+                // merge, so it also works before userGears has been created
+                transaction.set(
+                    userGearsDocRef,
+                    { gears: newGears },
+                    { merge: true },
+                );
             });
         } catch (error) {
             console.error(error);
