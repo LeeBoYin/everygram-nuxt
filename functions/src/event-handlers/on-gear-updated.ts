@@ -7,6 +7,7 @@ import {
     generateThumbnails,
     GEAR_THUMBNAIL_SIZES,
 } from '../utils/generate-thumbnails';
+import { getOwnerUid } from '../utils/get-owner-uid';
 
 export const onGearUpdated = onDocumentUpdated(
     'gear/{gearId}',
@@ -73,6 +74,15 @@ export const onGearUpdated = onDocumentUpdated(
             if (newPhotoFileName) {
                 subPromises.push(
                     (async () => {
+                        // the owner decides which userGears doc is written
+                        const ownerUid = getOwnerUid(
+                            newGear?.role,
+                            `gear/${gearId}`,
+                        );
+                        if (!ownerUid) {
+                            return;
+                        }
+
                         // 2.2.1. generate thumbnails
                         const generatedThumbnails = await generateThumbnails({
                             imagePath: `gear/${gearId}/${newPhotoFileName}`,
@@ -92,7 +102,7 @@ export const onGearUpdated = onDocumentUpdated(
                                     .doc(gearId);
                                 const userGearsDocRef = getFirestore()
                                     .collection('userGears')
-                                    .doc(Object.entries(newGear.role)[0][0]);
+                                    .doc(ownerUid);
                                 // Read the documents
                                 const [gearDoc, userGearsDoc] =
                                     await Promise.all([

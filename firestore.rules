@@ -12,11 +12,27 @@ service cloud.firestore {
 		return adminRole() in ['owner', 'admin'];
 	}
 
+	function isOwner() {
+		return isAuthenticated() && resource.data.role[request.auth.uid] == 'owner';
+	}
+
+	// `role` of a new doc must contain the creator only, as the owner
+	function isCreatingOwnDoc() {
+		return request.resource.data.role.keys().hasOnly([request.auth.uid])
+			&& request.resource.data.role[request.auth.uid] == 'owner';
+	}
+
+	// clients can never change `role` of an existing doc
+	function isRoleUnchanged() {
+		return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
+	}
+
 	match /databases/{database}/documents {
 		// gear
 		match /gear/{gearID} {
-			allow create: if isAuthenticated() && request.resource.data.role[request.auth.uid] == 'owner';
-			allow read, update, delete: if resource.data.role[request.auth.uid] == 'owner';
+			allow create: if isAuthenticated() && isCreatingOwnDoc();
+			allow read, delete: if isOwner();
+			allow update: if isOwner() && isRoleUnchanged();
 		}
 		
 		// user gears
@@ -27,8 +43,9 @@ service cloud.firestore {
 		
 		// trip
 		match /trip/{tripID} {
-			allow create: if isAuthenticated() && request.resource.data.role[request.auth.uid] == 'owner';
-			allow read, update, delete: if resource.data.role[request.auth.uid] == 'owner';
+			allow create: if isAuthenticated() && isCreatingOwnDoc();
+			allow read, delete: if isOwner();
+			allow update: if isOwner() && isRoleUnchanged();
 		}
 		
 		// trip share, only admin is allowed to write

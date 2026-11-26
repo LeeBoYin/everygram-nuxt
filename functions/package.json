@@ -9,7 +9,8 @@
         "start": "npm run shell",
         "deploy": "firebase deploy --only functions",
         "logs": "firebase functions:log",
-        "admin:set-owner": "node scripts/set-admin-owner.mjs"
+        "admin:set-owner": "node scripts/set-admin-owner.mjs",
+        "check:roles": "node scripts/check-invalid-roles.mjs"
     },
     "engines": {
         "node": "24"

@@ -11,10 +11,12 @@
         "prepare": "husky",
         "prettier": "npx prettier . --write",
         "emulator": "firebase emulators:start",
+        "test:rules": "firebase emulators:exec --only firestore --project demo-everygram \"node --test tests/*.test.mjs\"",
         "deploy-functions": "firebase deploy --only functions",
         "deploy-rules": "firebase deploy --only firestore:rules,storage"
     },
     "devDependencies": {
+        "@firebase/rules-unit-testing": "^6.0.0",
         "@nuxtjs/i18n": "^10.6.0",
         "@pinia/nuxt": "1.0.2",
         "@types/lodash-es": "^4.17.12",

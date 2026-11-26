@@ -3,34 +3,20 @@ import {
     HttpsError,
     onCall,
 } from 'firebase-functions/v2/https';
+import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 
 // Callable function when user profile is updated
 export const onUserProfileUpdated = onCall(
     { region: 'asia-northeast1' },
     async (request: CallableRequest<any>) => {
-        // only the signed-in user's own trips can be updated. `userId` sent by
-        // clients is ignored.
+        // only the signed-in user's own trips can be updated
         const userId = request.auth?.uid;
         if (!userId) {
             throw new HttpsError('unauthenticated', 'Login required');
         }
-        const { displayName, photoURL } = request.data || {};
-        if (!displayName && !photoURL) {
-            throw new HttpsError(
-                'invalid-argument',
-                'At least displayName or photoURL must be provided',
-            );
-        }
-        if (
-            (displayName && typeof displayName !== 'string') ||
-            (photoURL && typeof photoURL !== 'string')
-        ) {
-            throw new HttpsError(
-                'invalid-argument',
-                'displayName and photoURL must be strings',
-            );
-        }
+        // the profile is read from Auth, values sent by clients are ignored
+        const user = await getAuth().getUser(userId);
 
         // Update tripShare owner info
         const tripSharesSnapshot = await getFirestore()
@@ -41,9 +27,10 @@ export const onUserProfileUpdated = onCall(
         // Create a batch to update all matching tripShare documents
         if (!tripSharesSnapshot.empty) {
             const batch = getFirestore().batch();
-            const updateData: any = {};
-            if (displayName) updateData['owner.displayName'] = displayName;
-            if (photoURL) updateData['owner.photoURL'] = photoURL;
+            const updateData = {
+                'owner.displayName': user.displayName || '',
+                'owner.photoURL': user.photoURL || '',
+            };
             tripSharesSnapshot.forEach((doc) =>
                 batch.update(doc.ref, updateData),
             );
