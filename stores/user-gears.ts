@@ -312,7 +312,7 @@ export const useUserGearsStore = defineStore('userGearsStore', () => {
                 // update userGears document
                 transaction.update(userGearsDocRef, {
                     [`gears.${id}`]: formatDataToGearType(id, {
-                        ...gearMap.value[id],
+                        ...gearDocSnap.data(),
                         ...formattedGearData,
                     }),
                 });
