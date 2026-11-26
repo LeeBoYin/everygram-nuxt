@@ -2,6 +2,7 @@ import * as logger from 'firebase-functions/logger';
 import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import _ from 'lodash';
+import { getOwnerUid } from './get-owner-uid';
 import { toTripShareGear } from './trip-share-gear';
 
 export const publishTrip = async (tripId: string) => {
@@ -15,11 +16,8 @@ export const publishTrip = async (tripId: string) => {
     const trip = tripDoc.data() as Trip;
 
     // get owner user Uid
-    const ownerUid = Object.entries(trip.role).find(
-        ([uid, role]) => role === 'owner',
-    )?.[0];
+    const ownerUid = getOwnerUid(trip.role, tripDocRef.path);
     if (!ownerUid) {
-        logger.error('Owner not found.');
         return;
     }
 
