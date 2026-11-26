@@ -96,11 +96,12 @@ export const useUserTripsStore = defineStore('userTripsStore', () => {
             return;
         }
         try {
-            delete tripData.id;
+            // don't mutate the caller's object
+            const { id: _id, ...data } = tripData;
             const trip = getTripById.value(id);
             await updateDoc(doc(tripCollectionRef, id), {
-                ...tripData,
-                ...(!trip.isPublished && tripData.isPublished
+                ...data,
+                ...(!trip?.isPublished && data.isPublished
                     ? { published: serverTimestamp() }
                     : {}),
                 updated: serverTimestamp(),
